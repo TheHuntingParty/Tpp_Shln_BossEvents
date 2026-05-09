@@ -245,7 +245,7 @@ this.setOnBootSneakRoutes = {
   [6]="rt_shln_Null",
   [7]="rt_shln_Null",
   [8]="rt_shln_Null",
-  [9]="rt_shln_Null",
+  [9]="rt_shlnArea9_s_0000",
 }
 
 this.setOnBootCautionRoutes = {
@@ -258,7 +258,7 @@ this.setOnBootCautionRoutes = {
   [6]="rt_shln_Null",
   [7]="rt_shln_Null",
   [8]="rt_shln_Null",
-  [9]="rt_shln_Null",
+  [9]="rt_shlnArea9_c_0000",
 }
 
 this.SetCautionRouteAlert = {
@@ -358,7 +358,7 @@ this.SetCautionRouteAlert = {
     "rt_shln_Null",
   },
   [9]={
-    "rt_shln_Null",
+    "rt_shlnArea9_c_0000",
   },
 }
 
@@ -468,7 +468,15 @@ this.MissileRouteListForAfgh = {
     "rt_shln_Null",
   },
   [9]={
-    "rt_shln_Null",
+    "rt_SearchMissileArea9_0000",
+    "rt_SearchMissileArea9_0001",
+    "rt_SearchMissileArea9_0002",
+    "rt_SearchMissileArea9_0003",
+    "rt_SearchMissileArea9_0004",
+    "rt_SearchMissileArea9_0005",
+    "rt_SearchMissileArea9_0006",
+    "rt_SearchMissileArea9_0007",
+    "rt_SearchMissileArea9_0008",
   },
 }
 

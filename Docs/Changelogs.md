@@ -1,5 +1,10 @@
 # Changelogs
 
+#### r3
+- Updated KnownIssues.md
+- Added a defaukt Caution and Sneak route for Mountain Relay Base area
+- Added Search Missiles for Mountain Relay Base CP area
+
 #### r2
 - Added Changelogs.md
 - Sahelanthropus Search Missiles during Hellbound AI stage now work correctly
