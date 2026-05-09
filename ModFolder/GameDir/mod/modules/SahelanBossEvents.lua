@@ -235,6 +235,32 @@ this.SahelanRouteListForAfgh = {
   },
 }
 
+this.setOnBootSneakRoutes = {
+  [0]="rt_shln_SBtoOKB_s_0015",
+  [1]="rt_shln_Null",
+  [2]="rt_shln_Null",
+  [3]="rt_shln_Null",
+  [4]="rt_shln_Null",
+  [5]="rt_shln_Null",
+  [6]="rt_shln_Null",
+  [7]="rt_shln_Null",
+  [8]="rt_shln_Null",
+  [9]="rt_shln_Null",
+}
+
+this.setOnBootCautionRoutes = {
+  [0]="rt_shln_SBtoOKB_c_0055",
+  [1]="rt_shln_Null",
+  [2]="rt_shln_Null",
+  [3]="rt_shln_Null",
+  [4]="rt_shln_Null",
+  [5]="rt_shln_Null",
+  [6]="rt_shln_Null",
+  [7]="rt_shln_Null",
+  [8]="rt_shln_Null",
+  [9]="rt_shln_Null",
+}
+
 this.SetCautionRouteAlert = {
   [0]={
     "rts_shln_c_0020",
@@ -308,31 +334,31 @@ this.SetCautionRouteAlert = {
     "rt_shln_SBtoOKB_c_0055",
   },
   [1]={
-    "",
+    "rt_shln_Null",
   },
   [2]={
-    "",
+    "rt_shln_Null",
   },
   [3]={
-    "",
+    "rt_shln_Null",
   },
   [4]={
-    "",
+    "rt_shln_Null",
   },
   [5]={
-    "",
+    "rt_shln_Null",
   },
   [6]={
-    "",
+    "rt_shln_Null",
   },
   [7]={
-    "",
+    "rt_shln_Null",
   },
   [8]={
-    "",
+    "rt_shln_Null",
   },
   [9]={
-    "",
+    "rt_shln_Null",
   },
 }
 
@@ -509,8 +535,10 @@ end
 this.SetSahelanRoute = function( sneakRouteName, cautionRouteName )
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
   local command1 = {id="SetSneakRoute", route=sneakRouteName}
+  local command2 = {id="SetCautionRoute", route=cautionRouteName}
 
   GameObject.SendCommand(gameObjectId, command1)
+  GameObject.SendCommand(gameObjectId, command2)
 end
 
 --no idea what this does 
@@ -524,7 +552,7 @@ end
 
 this.SetSahelanMissileRouteList = function(CurrentSearchMissilerouteList)
 
-  local routeList = this.MissileRouteListForAfgh[Ivars.IsSahelanActiveArea:Get()]
+  local routeList = CurrentSearchMissilerouteList
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
   local indexNum = 0
 
@@ -625,14 +653,15 @@ this.SetUpSahelanAfgh = function()
   local CombatGradecommand = { id = "SetCombatGrade", defenseValue=60000, defenseValueForWeakPoint=20000, offenseGrade=15, defenseGrade=15 }
   local CurrentBaseRoute = SahelanAreasAfghBaseRoutes[Ivars.IsSahelanActiveArea:Get()]
 
-  --this.SetSahelanRoute( "rt_shlnArea9_OnTheHillTest", "rt_shlnArea9_OnTheHillTest" )
+  this.SetSahelanSneakRoute(this.setOnBootSneakRoutes[Ivars.IsSahelanActiveArea:Get()])
+  this.SetSahelanCautionRoute(this.setOnBootCautionRoutes[Ivars.IsSahelanActiveArea:Get()])
   
   GameObject.SendCommand(gameObjectId, CombatGradecommand)
   this.UpdateSahelanBaseRoute( CurrentBaseRoute )
   -- Sally wont move on alert without routes here
   this.SetSahelanSearchRouteList()
   --this.SetSahelanRouteLink()
-  --this.SetSahelanMissileRouteList()
+  this.SetSahelanMissileRouteList(this.MissileRouteListForAfgh[Ivars.IsSahelanActiveArea:Get()])
   this.SetSahelanLife(600000)
   this.SetSahelanPartsLife(this.SahelanLifeTable)
 end
