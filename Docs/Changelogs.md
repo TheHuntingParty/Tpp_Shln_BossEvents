@@ -1,5 +1,19 @@
 # Changelogs
 
+#### r4
+- Added Sahelanthropus Hybrid mode packages (.fpk/.fpkd/.pftxs)
+- Added sahelan navmesh for `afgh`, optional install (~20 Minutes of install time in a clean modlist)
+- Added a temporary `rex_points` dataset
+- Updated Mantis GameObject Locator name to `Mantis`
+- Added a MessageTable for Hybrid AI
+- Added functions to start and stop the red fog
+- Added `CallSupportAttack` function
+- Added `StartHeliAntiSahelan` function
+- `SetUpSahelanAfgh` is now split in 2: `SetUpSahelanAfghHellboundAI` and `SetUpSahelanAfghDominionAI`
+- Changed total health points to 100k and each part health points to 3k
+- Function `SetSahelanType` is now called `SetSahelanTypeHellboundAI`
+- Added `SetSahelanTypeDominionAIExtreme` function
+
 #### r3
 - Updated KnownIssues.md
 - Added a defaukt Caution and Sneak route for Mountain Relay Base area
