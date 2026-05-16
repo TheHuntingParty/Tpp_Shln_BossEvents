@@ -7,8 +7,9 @@ The main goal of this project is to provide MG Sahelanthopus with all informatio
 | Stage Version  | Support Status  |
 | ------------ | ------------ |
 | Hellbound AI | Partially Supported  |
-| Dominion AI | Not Supported  |
-| Dominion AI (Extreme)  | Not Supported  |
+| Dominion AI | Supported  |
+| Dominion AI (Extreme)  | Supported  |
+| Hybrid Mode  | Partially Supported  |
 
 You can read more about the stage types [Here](https://mgsvmoddingwiki.github.io/AI/mgs/#stage-types "Here")
 
@@ -25,13 +26,13 @@ Afghanistan Map Regions
 | Da wiallo Kallai  | Not Supported  | Starts at Da wiallo, roams the area of the CP |
 | Da Ghwandai Khar  | Not Supported  | Starts at Da Ghwandai, roams the CP area |
 | Qaria Sakhra Ee  | Not Supported  | Starts at Qarya Sakhra, roams the CP area |
-| Mountain Relay Base  | Not Supported  | Starts at mountain base, roams the CP area |
+| Mountain Relay Base  | Partially Supported  | Starts at mountain base, roams the CP area |
 
 Middle Africa Map Regions
 
 **None**
 
 #### Requirements
-Infinite Heaven ( [Nexus Mods link](https://www.nexusmods.com/metalgearsolidvtpp/mods/45 "Nexus Mods link"))
+Infinite Heaven r263+ ( [Nexus Mods link](https://www.nexusmods.com/metalgearsolidvtpp/mods/45 "Nexus Mods link"))
 IHHook ([Nexus Mods link](https://www.nexusmods.com/metalgearsolidvtpp/mods/1226 "Nexus Mods link"))
 Snakebite / Makebite ([Nexus Mods link](https://www.nexusmods.com/metalgearsolidvtpp/mods/106 "Nexus Mods link"))

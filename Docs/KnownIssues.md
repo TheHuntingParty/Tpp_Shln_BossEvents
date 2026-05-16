@@ -16,3 +16,4 @@
 - Other GameObjects (Soldier2 for example) do not "see" or interact with MG Sahelanthropus
 - Both Sahelanthropus and animals are not programmed to be aware of eachother resulting in their deaths
 - If Sahelanthropus uses a grenade while nearby vehicles are been driven by enemies, said vehicles become invincible
+- Enemy helicopter is not affected by red fog

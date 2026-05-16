@@ -15,52 +15,52 @@ local WeakpointHitCounts = 0
 local SahelanAreasAfghPacks = {
   [0]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_0.fpk",
   },
   [1]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_1.fpk",
   },
   [2]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_2.fpk",
   },
   [3]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_3.fpk",
   },
   [4]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_4.fpk",
   },
   [5]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_5.fpk",
   },
   [6]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_6.fpk",
   },
   [7]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_7.fpk",
   },
   [8]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_8.fpk",
   },
   [9]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hybrid_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_9.fpk",
   },
 }
@@ -690,7 +690,7 @@ this.StartRedStrom = function(stormTime)
     local command = { id = "SetParasiteEffect" }
     GameObject.SendCommand(gameObjectId, command)
 
-end,
+end
 
 
 this.StopRedStorm = function()
@@ -708,7 +708,7 @@ this.StopRedStorm = function()
     local gameObjectId = {type="TppSahelan2", group=0, index=0}
     local command = { id = "ResetParasiteEffect" }
     GameObject.SendCommand(gameObjectId, command)
-end,
+end
 
 this.CallSupportAttack = function()
   -- Gets sahelan position
@@ -718,18 +718,30 @@ this.CallSupportAttack = function()
 
   -- calls a air strike in sahelan
   TppSupportRequest.RequestSupportAttack{ attackType="BOMBARDMENT_TO_SAHELAN", pos=Vector3(position), attackLevel=5, waitTime=0.0 ,isIgnoreSectionFunc = true }
-end,
+end
 
 this.StartHeliAntiSahelan = function()
-  
-  -- Gets sahelan position
-  local gameObjectId = {type="TppSahelan2", group=0, index=0}
-  local command = { id = "GetPosition" }
-  local position = GameObject.SendCommand( gameObjectId, command )
-
   -- Calls in the support heli with a special command, sets a point to spawn and a point to despawn isntead of a route
   local SupportgameObjectId = GameObject.GetGameObjectId("SupportHeli")
-  GameObject.SendCommand(SupportgameObjectId, { id="StartAntiSahelan", startPosition=Vector3(position[0]+150,position[1]+60,position[2]+150) , pullOutPosition=Vector3(position[0]+150,position[1]+60,position[2]+150)} )
+  GameObject.SendCommand(SupportgameObjectId, { id="StartAntiSahelan", startPosition=Vector3(vars.playerPosX + 350, vars.playerPosY + 160, vars.playerPosZ + 350) , pullOutPosition=Vector3(vars.playerPosX + 350, vars.playerPosY + 160, vars.playerPosZ + 350)} )
+  InfCore.DebugPrint("SahelanBossEvents: StartHeliAntiSahelan called")
+end
+
+this.KeepCommandPostAlert = function ()
+  local gameObjectId = { type="TppCommandPost2" }
+  local command = { id = "SetKeepAlert", enable=true }
+  GameObject.SendCommand( gameObjectId, command )
+end
+
+this.DisableKeepCommandPostAlert = function ()
+  local gameObjectId = { type="TppCommandPost2" }
+  local command = { id = "SetKeepAlert", enable=false }
+  GameObject.SendCommand( gameObjectId, command )
+end
+
+this.SetUpSupportHeli = function()
+  local gameObjectId = GameObject.GetGameObjectId("SupportHeli")
+  GameObject.SendCommand(gameObjectId, { id="SetAntiSahelanEnabled", enabled=true  })
 end
 
 -- ### Setup func for both hellbound AI and hybrid AI
@@ -754,6 +766,25 @@ this.SetUpSahelanAfghHellboundAI = function()
 
 end
 
+
+this.SetUpSahelanAfghDominionAI = function()
+
+  local gameObjectId = {type="TppSahelan2", group=0, index=0}
+  local CombatGradecommand = { id = "SetCombatGrade", defenseValue=60000, defenseValueForWeakPoint=20000, offenseGrade=15, defenseGrade=15 }
+  GameObject.SendCommand(gameObjectId, CombatGradecommand)
+
+  this.UpdateSahelanBaseRoute( "rt_shlnArea9_b_DominionOutOfBounds" )
+
+  this.SetSahelanLife(50000)
+  this.SetSahelanPartsLife(this.SahelanLifeTable)
+
+end
+
+this.ChangeCommandPostPhase = function (Phase)
+  local gameObjectId = { type="TppCommandPost2" }
+  local command = { id = "SetPhase", phase=Phase }
+  GameObject.SendCommand( gameObjectId, command )
+end
 
 function this.AddMissionPacks(missionCode,packPaths)
   if Ivars.IsSahelanActiveIvar:Is(1) then
@@ -805,11 +836,11 @@ function this.MessagesForHybridAI()
                         msg = "ChangePhase",
                         func = function( cpId, phase )
                           if phase == TppGameObject.PHASE_ALERT or phase == TppGameObject.PHASE_CAUTION then
+                            CPPhaseSwitchCount = CPPhaseSwitchCount + 1
                             if PlayerIsDetected == false then
                               this.SetSahelanTypeHellboundAI()
                               TppMission.StartBossBattle()
                               PlayerIsDetected = true
-                              CPPhaseSwitchCount = CPPhaseSwitchCount + 1
                             end
                           elseif CPPhaseSwitchCount >= 5 and DidSahelanAISwitch == false then
                             this.SetSahelanTypeDominionAIExtreme()
@@ -822,10 +853,10 @@ function this.MessagesForHybridAI()
                         msg = "Dead",
                         func = function(id)
                           if id == GameObject.GetGameObjectId("Sahelanthropus") then
-                            InfCore.Log("SahelanBossEvents: sahelan dead")
+                            InfCore.DebugPrint("SahelanBossEvents: sahelan dead")
                             this.StopRedStorm()
                             -- debug
-                            InfCore.Log("SahelanBossEvents: Weak Hit Count totall: "..WeakpointHitCounts)
+                            InfCore.DebugPrint("SahelanBossEvents: Weak Hit Count totall: "..WeakpointHitCounts)
                           end
                         end,
                       },
@@ -834,7 +865,7 @@ function this.MessagesForHybridAI()
                         msg = "Damage",
                         func = function (id)
                           if id == GameObject.GetGameObjectId("Mantis") then
-                            InfCore.Log("SahelanBossEvents: Mantis hit by player")
+                            InfCore.DebugPrint("SahelanBossEvents: Mantis hit by player")
                           end
                         end,
                       },
@@ -842,7 +873,7 @@ function this.MessagesForHybridAI()
                       {
                         msg = "SahelanHeadBroken",
                         func = function()
-                          InfCore.Log("SahelanBossEvents: sahelan head broken")
+                          InfCore.DebugPrint("SahelanBossEvents: sahelan head broken")
                         end,
                       },
                       -- ### unknown when called exactly, calls a airtrike in sahelan
@@ -882,7 +913,7 @@ function this.MessagesForHybridAI()
                       { 
                         msg = "SahelanReturned1stRailGun",
                         func = function()
-                          InfCore.Log("SahelanBossEvents: SahelanReturned1stRailGun")
+                          InfCore.DebugPrint("SahelanBossEvents: SahelanReturned1stRailGun")
                         end,
                       },
                       -- ### Triggers at every fight phase change ###
@@ -890,22 +921,22 @@ function this.MessagesForHybridAI()
                         msg = "SahelanChangePhase",
                         func = function(id,phaseName)
                           if phaseName == TppSahelan2.SAHELAN2_PHASE_1ST  then 
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_1ST")
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_1ST")
                           elseif phaseName == TppSahelan2.SAHELAN2_PHASE_2ND then 
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_2ND")
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_2ND")
                             this.StartHeliAntiSahelan()
                           elseif phaseName == TppSahelan2.SAHELAN2_PHASE_3RD then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_3RD")
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_3RD")
                           elseif phaseName == TppSahelan2.SAHELAN2_PHASE_4TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_4TH")
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_4TH")
                           elseif phaseName == TppSahelan2.SAHELAN2_PHASE_5TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_5TH")
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_5TH")
                           elseif phaseName == TppSahelan2.SAHELAN2_PHASE_6TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_6TH")
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_6TH")
                           elseif phaseName == TppSahelan2.SAHELAN2_PHASE_7TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_7TH")
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_7TH")
                           elseif phaseName == TppSahelan2.SAHELAN2_PHASE_8TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_8TH") 
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_8TH") 
                           end
                         end,
                       },
@@ -913,7 +944,7 @@ function this.MessagesForHybridAI()
                       { 
                         msg = "SahelanPartsBroken",
                         func = function()
-                          InfCore.Log("SahelanBossEvents: SahelanPartsBroken")
+                          InfCore.DebugPrint("SahelanBossEvents: SahelanPartsBroken")
                         end,
                       },
                       -- ### Triggers when the player hits the weak point (glowing chest when it does sword attacks ?) ###
@@ -927,7 +958,171 @@ function this.MessagesForHybridAI()
                       { 
                         msg = "SahelanSearchMissileToHeli",
                         func = function()
-                        InfCore.Log("SahelanBossEvents: SahelanSearchMissileToHeli")         
+                        InfCore.DebugPrint("SahelanBossEvents: SahelanSearchMissileToHeli")         
+                          this.StopRedStorm()
+                        end,
+                      },
+        },
+        Timer = {
+                  {
+                    msg = "Finish",
+                    sender = "RedStromTimer",
+                    func = function()
+                      this.StopRedStorm()
+                    end
+                  },
+        }, 
+      }
+end
+
+
+-- ### Message table for Dominion AI ###
+function this.MessagesForDominionAI()
+    return
+      StrCode32Table {
+        GameObject={    
+                      { 
+                        msg = "ChangePhase",
+                        func = function( cpId, phase )
+                          if phase == TppGameObject.PHASE_ALERT then
+                            CPPhaseSwitchCount = CPPhaseSwitchCount + 1
+                            if CPPhaseSwitchCount >= 1 and DidSahelanAISwitch == false then
+                              -- No clue what this does
+                              TppMission.StartBossBattle()
+                              --Activates sahelan
+                              this.SetSahelanTypeDominionAIExtreme()
+                              -- Set switch to true
+                              DidSahelanAISwitch = true
+                              -- Activates sahelan fog, will leave it here for now
+                              WeatherManager.RequestTag("Sahelan_fog", 40 )
+                              -- Sets all CPs on aler and keeps them that way
+                              --this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
+                              -- keeps all CPs on alert
+                              --this.KeepCommandPostAlert()
+                              -- sets the heli to Anti Sahelan mode, very important
+                              this.SetUpSupportHeli()
+                              -- debug log
+                              InfCore.DebugPrint("SahelanBossEvents: ChangePhase = start fight")
+                            end
+                          end         
+                        end
+                      },
+                      {
+                        -- ### Checks if sahelan is dead###
+                        msg = "Dead",
+                        func = function(id)
+                          if id == GameObject.GetGameObjectId("Sahelanthropus") then
+                            InfCore.DebugPrint("SahelanBossEvents: sahelan dead")
+                            --disable red fog 
+                            this.StopRedStorm()
+                            -- Disable CP keep alert
+                            this.DisableKeepCommandPostAlert()
+                            --end boss fight
+                            TppMission.FinishBossBattle()
+                            -- debug total weak hit count
+                            InfCore.DebugPrint("SahelanBossEvents: Weak Hit Count totall: "..WeakpointHitCounts)
+                          end
+                        end,
+                      },
+                      -- ### Sent after mantis is hit by the player ###
+                      {
+                        msg = "Damage",
+                        func = function (id)
+                          if id == GameObject.GetGameObjectId("Mantis") then
+                            InfCore.DebugPrint("SahelanBossEvents: Mantis hit by player")
+                          end
+                        end,
+                      },
+                      -- ### Sahelan head was broken by the player ###
+                      {
+                        msg = "SahelanHeadBroken",
+                        func = function()
+                          InfCore.DebugPrint("SahelanBossEvents: sahelan head broken")
+                        end,
+                      },
+                      -- ### unknown when called exactly, calls a airtrike in sahelan
+                      { 
+                        msg = "SahelanEnableSuportAttack",
+                        func = function()
+                            this.CallSupportAttack()
+                        end,
+                      },
+                      -- ### Makes the support heli attack sahelen, its essencial for battle sequence, not optional
+                      { 
+                        msg = "SahelanEnableHeliAttack",
+                        func = function()
+                          this.StopRedStorm()         
+                          GameObject.SendCommand( { type="TppHeli2", index=0, }, { id="SetAntiSahelanEventEnabled", enabled=true } )   
+                        end,
+                      },
+                      -- ### Triggers after sahelan uses the red mist grenades ###
+                      { 
+                        msg = "SahelanGrenadeExplosion",
+                        func = function()
+                            -- number set here defines the duration in seconds, can be canceled by fight sequence changing
+                            this.StartRedStrom(100)
+                        end,
+                      },
+                      -- ### Triggers after sahelan starts using the railgun for the first time ###
+                      { 
+                        msg = "Sahelan1stRailGun",
+                        func = function()
+                          DidSahelanUseRailgun = true
+                          -- disables the heli attack against sahelan and requests a pull out
+                          GameObject.SendCommand( { type="TppHeli2", index=0, }, { id="SetAntiSahelanEventEnabled", enabled=false } )
+                          GameObject.SendCommand( { type="TppHeli2", index=0, }, { id="PullOut" } ) 
+                        end,
+                      },
+                      -- ### Triggers after sahelan leaves rex mode for the 1st time and starts the last phase of the batlle ###
+                      { 
+                        msg = "SahelanReturned1stRailGun",
+                        func = function()
+                          InfCore.DebugPrint("SahelanBossEvents: SahelanReturned1stRailGun")
+                        end,
+                      },
+                      -- ### Triggers at every fight phase change ###
+                      { 
+                        msg = "SahelanChangePhase",
+                        func = function(id,phaseName)
+                          if phaseName == TppSahelan2.SAHELAN2_PHASE_1ST  then 
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_1ST")
+                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_2ND then 
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_2ND")
+                            this.StartHeliAntiSahelan()
+                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_3RD then
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_3RD")
+                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_4TH then
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_4TH")
+                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_5TH then
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_5TH")
+                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_6TH then
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_6TH")
+                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_7TH then
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_7TH")
+                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_8TH then
+                            InfCore.DebugPrint("SahelanBossEvents: SAHELAN2_PHASE_8TH") 
+                          end
+                        end,
+                      },
+                      -- ### Triggers every time a part is broken ? ###
+                      { 
+                        msg = "SahelanPartsBroken",
+                        func = function()
+                          InfCore.DebugPrint("SahelanBossEvents: SahelanPartsBroken")
+                        end,
+                      },
+                      -- ### Triggers when the player hits the weak point (glowing chest when it does sword attacks ?) ###
+                      { 
+                        msg = "SahelanBlastDamageToWeakPoint",
+                        func = function()
+                          WeakpointHitCounts = WeakpointHitCounts + 1
+                        end,
+                      },
+                      -- ### Triggers when sahelan attacks the heli before 1st rex mode ###
+                      { 
+                        msg = "SahelanSearchMissileToHeli",
+                        func = function()
+                        InfCore.DebugPrint("SahelanBossEvents: SahelanSearchMissileToHeli")         
                           this.StopRedStorm()
                         end,
                       },
@@ -948,7 +1143,6 @@ end
 
 
 
-
 --  ### IMPORTANT: The "sahelanTraps" needs to be set up here 1st, otherwise a empty table will be submited ### 
 --  ### Seems to work After Checkpoint and game reboot done this way                                        ###
 
@@ -964,7 +1158,7 @@ function this.Init(missionTable)
         }
         table.insert( this.sahelanTraps, trapTable )
       end
-      this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForHybridAI())
+      this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
     end 
   end
  end
@@ -974,8 +1168,11 @@ function this.Init(missionTable)
 this.SetUpEnemy = function ()
   if Ivars.IsSahelanActiveIvar:Is(1) then
     if vars.missionCode==30010 then
-      this.SetUpSahelanAfghHellboundAI()
+      this.SetUpSahelanAfghDominionAI()
     end
+    CPPhaseSwitchCount = 0
+    PlayerIsDetected = false
+    DidSahelanAISwitch = false
   end
 end 
 
@@ -984,8 +1181,11 @@ end
 function this.OnReload(missionTable)
   if Ivars.IsSahelanActiveIvar:Is(1) then
       if vars.missionCode==30010 then
-        this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForHybridAI())
+        this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
       end
+      CPPhaseSwitchCount = 0
+      PlayerIsDetected = false
+      DidSahelanAISwitch = false
   end   
 end
 

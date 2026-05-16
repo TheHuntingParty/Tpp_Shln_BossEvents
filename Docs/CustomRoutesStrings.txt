@@ -87,3 +87,4 @@ rt_shlnArea9_nn_0007
 rt_shlnArea9_nn_0008
 rt_shlnArea9_nn_0009
 rt_shlnArea9_nn_0010
+rt_shlnArea9_b_DominionOutOfBounds

@@ -1,5 +1,17 @@
 # Changelogs
 
+#### r5
+- Updated the README file
+- Adjusted all routesets
+- Added `SetUpSahelanAfghDominionAI` funtion
+- Added a MessageTable for Dominion AI
+- Added `ChangeCommandPostPhase` function
+- Added Sahelanthropus Dominion mode packages (.fpk/.fpkd/.pftxs)
+- Removed temporary Rex points
+- Added out of bounds base route for Dominion AI
+- Added all required functions for support heli anti sahelan sequence
+- Added a temporary SeachMissile Dataset for each area
+
 #### r4
 - Added Sahelanthropus Hybrid mode packages (.fpk/.fpkd/.pftxs)
 - Added sahelan navmesh for `afgh`, optional install (~20 Minutes of install time in a clean modlist)
