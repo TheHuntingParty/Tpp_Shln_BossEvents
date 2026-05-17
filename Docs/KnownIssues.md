@@ -7,6 +7,7 @@
 - Dominion AI navigation can be messy, i edited soldier nav2s and allowed Sahelanthropus to go anywhere on them, not optimal for pathfinding
 - Sahelanthropus will sometimes destroy a watch tower
 - Some Areas hit and may go above the nav2 load limit causing some nav2 blocks to not be loaded
+- Areas in between command posts dont have HidePointData nodes, rex mode wont work well
 
 
 #### Hardcoded Behaviour (Cant Fix)

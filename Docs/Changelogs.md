@@ -1,5 +1,11 @@
 # Changelogs
 
+#### r6 (Initial Nexus Release)
+- Added TppHidePointData entries for Afghanistan
+- Added `DisableSetUpSupportHeli` function
+- Adjusted Health Points
+- Added Rewards for beating sahelanthropus
+
 #### r5
 - Updated the README file
 - Adjusted all routesets
