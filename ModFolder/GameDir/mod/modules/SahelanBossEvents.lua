@@ -756,7 +756,7 @@ this.RewardPlayerAfterDefeatSally = function()
   TppMotherBaseManagement.AddTempResource{resourceId=2,count=500000}
   TppMotherBaseManagement.AddTempResource{resourceId=3,count=200000}
   TppMotherBaseManagement.AddTempResource{resourceId=4,count=35000}
-  TppMotherBaseManagement.AddTempResource{resourceId=30,count=1}
+  TppMotherBaseManagement.AddTempResource{resourceId=29,count=1}
 
   InfCore.DebugPrint("Sahelan defeat reward sent, please trigger a checkpoint to receive them")
 end

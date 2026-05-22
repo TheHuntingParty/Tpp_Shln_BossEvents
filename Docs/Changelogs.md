@@ -1,5 +1,9 @@
 # Changelogs
 
+#### r7
+- Fixed the rewards after beating Sahelanthropus, it was rewarding a skull parasite instead of Nuclear Waste
+- Adds TppHidePointData entities across most areas of the Afghanistan map
+
 #### r6 (Initial Nexus Release)
 - Added TppHidePointData entries for Afghanistan
 - Added `DisableSetUpSupportHeli` function
