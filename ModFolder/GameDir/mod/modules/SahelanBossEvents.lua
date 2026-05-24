@@ -12,60 +12,7 @@ local DidSahelanAISwitch = false
 local DidSahelanUseRailgun = false
 local WeakpointHitCounts = 0
 
-local SahelanAreasAfghPacks = {
-  [0]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_0.fpk",
-  },
-  [1]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_1.fpk",
-  },
-  [2]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_2.fpk",
-  },
-  [3]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_3.fpk",
-  },
-  [4]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_4.fpk",
-  },
-  [5]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_5.fpk",
-  },
-  [6]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_6.fpk",
-  },
-  [7]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_7.fpk",
-  },
-  [8]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_8.fpk",
-  },
-  [9]={
-    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_9.fpk",
-  },
-}
-
-
+local ActiveAreaRandomID = 0
 
 local SahelanAreasAfghBaseRoutes = {
   [0]= "rts_shln_b_0000",
@@ -90,6 +37,10 @@ this.registerMenus={
 this.registerIvars={
   "IsSahelanActiveIvar",
   "IsSahelanActiveArea",
+  "IsSahelanPatrolRandomArea",
+  "IsSahelanCurrentModel",
+  "isLoadSahelanHealthBar",
+  --"IsSahelanDominionDificulty",
 }
 
 this.SahelanFreeRoamMenu={
@@ -97,8 +48,9 @@ this.SahelanFreeRoamMenu={
   options={
     "Ivars.IsSahelanActiveIvar",
     "Ivars.IsSahelanActiveArea",
-   -- "Ivars.IsRandomArea",
-   -- "Ivars.CurrentModel",
+    "Ivars.IsSahelanPatrolRandomArea",
+    "Ivars.IsSahelanCurrentModel",
+    "Ivars.isLoadSahelanHealthBar",
   }
 }
 
@@ -111,7 +63,6 @@ this.IsSahelanActiveIvar={
 
 this.IsSahelanActiveArea={
   save=IvarProc.CATEGORY_EXTERNAL,
-  --range={max=9,min=0,increment=1},
   default=0,
   settings={0,1,2,3,4,5,6,7,8,9},
   settingNames="SahelanActiveAreaOptions",
@@ -120,18 +71,47 @@ this.IsSahelanActiveArea={
   end,
 }
 
+this.IsSahelanPatrolRandomArea={
+    save=IvarProc.CATEGORY_EXTERNAL,
+    range=Ivars.switchRange,
+    settingNames="set_switch",
+    default=0,
+}
+
+this.IsSahelanCurrentModel={
+  save=IvarProc.CATEGORY_EXTERNAL,
+  default=0,
+  settings={0,1,2,3,4},
+  settingNames="SahelanSkinOptions",
+}
+
+this.isLoadSahelanHealthBar={
+  save=IvarProc.CATEGORY_EXTERNAL,
+  default=1,
+  settings={0,1},
+  settingNames="SahelanHealthBarOptions",
+}
+
 this.langStrings={
   eng={
-      SahelanFreeRoamMenu="Free Roam Sahelanthropus Menu",
-      IsSahelanActiveIvar="Sahelanthropus In Free Roam: ",
-      IsSahelanActiveArea="Current Active Area: ",
-      SahelanActiveAreaOptions = {"Northern Area","Outpost 04","Yakho Oboo","Lamar Khaate","Shago Kallai","Wakh Barracks","Da wiallo Kallai","Da Ghwandai Khar","Qaria Sakhra Ee","Mountain Relay Base"},
+      SahelanFreeRoamMenu="Sahelanthropus Boss Events",
+      IsSahelanActiveIvar="Sahelanthropus In Free Roam:",
+      IsSahelanActiveArea="Current Active Area:",
+      IsSahelanPatrolRandomArea="Randomize Active Area:",
+      SahelanActiveAreaOptions={"Northern Area","Outpost 04","Yakho Oboo","Lamar Khaate","Shago Kallai","Wakh Barracks","Da wiallo Kallai","Da Ghwandai Khar","Qaria Sakhra Ee","Mountain Relay Base"},
+      SahelanSkinOptions={"Default","Black","Red","GZ","Black Sky"},
+      IsSahelanCurrentModel="Sahelanthropus Model: ",
+      isLoadSahelanHealthBar="Health bar:",
+      SahelanHealthBarOptions = {"Hide health bar","Show health bar"},
     },
   help={
     eng={
-      SahelanFreeRoamMenu="Controls if Sahelanthropus will roam a area during free roam, what area and what model is used",
+      SahelanFreeRoamMenu="Options menu for Sahelanthropus Boss Events",
       IsSahelanActiveIvar="Controls if Sahelanthropus is either active or not during free roam play",
-      IsSahelanActiveArea="Choose what area Sahelanthropus will roam during free roam if random area is set to false",
+      IsSahelanActiveArea="Choose what area Sahelanthropus will roam during free roam if random area is set to false, does not affect Dominion AI mode",
+      IsSahelanPatrolRandomArea="Randomizes the current active area",
+      IsSahelanCurrentModel="Select what model is used by Sahelanthropus",
+      isLoadSahelanHealthBar="Shows or hides the health bar, only affects Dominion AI mode",
     },
   },
 }
@@ -506,6 +486,7 @@ this.SahelanLifeTable = {
   LegR  = 3000,  
   LegL  = 3000,  
   Tnk   = 2500,
+  Shield = 25000,
 }
 
 
@@ -804,11 +785,83 @@ this.ChangeCommandPostPhase = function (Phase)
   GameObject.SendCommand( gameObjectId, command )
 end
 
+
 function this.AddMissionPacks(missionCode,packPaths)
+
+  local SahelanAreasAfghPacks = {
+  [0]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_0.fpk",
+  },
+  [1]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_1.fpk",
+  },
+  [2]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_2.fpk",
+  },
+  [3]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_3.fpk",
+  },
+  [4]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_4.fpk",
+  },
+  [5]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_5.fpk",
+  },
+  [6]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_6.fpk",
+  },
+  [7]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_7.fpk",
+  },
+  [8]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_8.fpk",
+  },
+  [9]={
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_9.fpk",
+  },
+}
+
   if Ivars.IsSahelanActiveIvar:Is(1) then
     if vars.missionCode==30010 then
-      for i,packagePath in ipairs(SahelanAreasAfghPacks[Ivars.IsSahelanActiveArea:Get()])do
-        packPaths[#packPaths+1]=packagePath
+      if Ivars.IsSahelanPatrolRandomArea:Is(1) then
+        ActiveAreaRandomID = math.random(0,9)
+        for i,packagePath in ipairs(SahelanAreasAfghPacks[ActiveAreaRandomID])do
+          packPaths[#packPaths+1]=packagePath
+        end
+      else
+        for i,packagePath in ipairs(SahelanAreasAfghPacks[Ivars.IsSahelanActiveArea:Get()])do
+          packPaths[#packPaths+1]=packagePath
+        end
       end
     elseif vars.missionCode==30020 then
       --for i,packagePath in ipairs(this.packages.sally_stuffMafr)do
@@ -1004,13 +1057,11 @@ function this.MessagesForDominionAI()
                         func = function( cpId, phase )
                           if phase == TppGameObject.PHASE_ALERT then
                             CPPhaseSwitchCount = CPPhaseSwitchCount + 1
-                            if CPPhaseSwitchCount >= 1 and DidSahelanAISwitch == false then
+                            if CPPhaseSwitchCount >= 1 then
                               -- No clue what this does
                               TppMission.StartBossBattle()
                               --Activates sahelan
                               this.SetSahelanTypeDominionAIExtreme()
-                              -- Set switch to true
-                              DidSahelanAISwitch = true
                               -- Activates sahelan fog, will leave it here for now
                               WeatherManager.RequestTag("Sahelan_fog", 40 )
                               -- Sets all CPs on aler and keeps them that way
@@ -1037,7 +1088,7 @@ function this.MessagesForDominionAI()
                             this.DisableKeepCommandPostAlert()
                             --end boss fight
                             TppMission.FinishBossBattle()
-                            --
+                            -- sets support heli to default behaviour
                             this.DisableSetUpSupportHeli()
                             -- rewards for player
                             this.RewardPlayerAfterDefeatSally()

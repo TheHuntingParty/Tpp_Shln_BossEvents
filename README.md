@@ -36,3 +36,7 @@ Middle Africa Map Regions
 Infinite Heaven r263+ ( [Nexus Mods link](https://www.nexusmods.com/metalgearsolidvtpp/mods/45 "Nexus Mods link"))
 IHHook ([Nexus Mods link](https://www.nexusmods.com/metalgearsolidvtpp/mods/1226 "Nexus Mods link"))
 Snakebite / Makebite ([Nexus Mods link](https://www.nexusmods.com/metalgearsolidvtpp/mods/106 "Nexus Mods link"))
+
+#### Special Thanks
+
+Big big thank you to ZIP, caplag and yazed for helping me with lua related things and other things outside lua, and also a big thanks to BobDoleOwndU for figuring out the issue regarding broken custom Sahelanthopus models and providing a .frdv that fixes the issues

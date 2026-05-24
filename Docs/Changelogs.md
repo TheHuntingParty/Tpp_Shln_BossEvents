@@ -1,5 +1,15 @@
 # Changelogs
 
+#### r8
+- Updated KnownIssues.md
+- Added a option to turn the active area into a random one, only implemented for Dominion AI for now
+- Changed the name of the Infinite Heaven menu to `Sahelanthropus Boss Events`
+- Added a option to choose what model Sahelanthropus uses
+- Added 5 options for Sahelanthropus model
+- Added a switch to the Sahelanthropus health bar, the user can now select if its loaded or not
+- Partially restored the shield, its now visible with collision
+- Added 25k health points to the shield
+
 #### r7
 - Fixed the rewards after beating Sahelanthropus, it was rewarding a skull parasite instead of Nuclear Waste
 - Adds TppHidePointData entities across most areas of the Afghanistan map

@@ -1,2 +1,5 @@
 /Assets/tpp/mecha/mgs/Pictures/mgs0_camo0_bsm
 /Assets/tpp/mecha/mgs/Pictures/mgs0_camo1_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_camo2_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_camo3_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_camo4_bsm

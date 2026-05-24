@@ -7,7 +7,6 @@
 - Dominion AI navigation can be messy, i edited soldier nav2s and allowed Sahelanthropus to go anywhere on them, not optimal for pathfinding
 - Sahelanthropus will sometimes destroy a watch tower
 - Some Areas hit and may go above the nav2 load limit causing some nav2 blocks to not be loaded
-- Areas in between command posts dont have HidePointData nodes, rex mode wont work well
 
 
 #### Hardcoded Behaviour (Cant Fix)
@@ -18,3 +17,4 @@
 - Both Sahelanthropus and animals are not programmed to be aware of eachother resulting in their deaths
 - If Sahelanthropus uses a grenade while nearby vehicles are been driven by enemies, said vehicles become invincible
 - Enemy helicopter is not affected by red fog
+- Sahelanthropus Shield mesh wont swap after being broken
