@@ -1,5 +1,12 @@
 # Changelogs
 
+#### r9
+- Added 1 skin, inspired by Shagohod from MGS3
+- Added a difficulty system with 4 options
+- Reworked the rewards system, big thanks to yazed for giving me all the info in `ShowAnnounceLog` stuff and Hero points
+- Fixed a issue with `CPPhaseSwitchCount`
+- Added Docs/DifficultyOptions.md
+
 #### r8
 - Updated KnownIssues.md
 - Added a option to turn the active area into a random one, only implemented for Dominion AI for now

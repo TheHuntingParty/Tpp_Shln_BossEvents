@@ -11,21 +11,11 @@ local CPPhaseSwitchCount = 0
 local DidSahelanAISwitch = false
 local DidSahelanUseRailgun = false
 local WeakpointHitCounts = 0
-
 local ActiveAreaRandomID = 0
+local TotalBrokenParts = 0
+local HasSahelanBeenBeaten = false
 
-local SahelanAreasAfghBaseRoutes = {
-  [0]= "rts_shln_b_0000",
-  [1]= "rt_shln_Null",
-  [2]= "rt_shln_Null",
-  [3]= "rt_shln_Null",
-  [4]= "rt_shln_Null",
-  [5]= "rt_shln_Null",
-  [6]= "rt_shln_Null",
-  [7]= "rt_shln_Null",
-  [8]= "rt_shln_Null",
-  [9]= "rt_shlnArea9_b_0000",
-}
+
 
 this.SahelanCounter = 0
 
@@ -40,7 +30,7 @@ this.registerIvars={
   "IsSahelanPatrolRandomArea",
   "IsSahelanCurrentModel",
   "isLoadSahelanHealthBar",
-  --"IsSahelanDominionDificulty",
+  "IsSahelanDominionDifficulty",
 }
 
 this.SahelanFreeRoamMenu={
@@ -51,6 +41,7 @@ this.SahelanFreeRoamMenu={
     "Ivars.IsSahelanPatrolRandomArea",
     "Ivars.IsSahelanCurrentModel",
     "Ivars.isLoadSahelanHealthBar",
+    "Ivars.IsSahelanDominionDifficulty",
   }
 }
 
@@ -81,7 +72,7 @@ this.IsSahelanPatrolRandomArea={
 this.IsSahelanCurrentModel={
   save=IvarProc.CATEGORY_EXTERNAL,
   default=0,
-  settings={0,1,2,3,4},
+  settings={0,1,2,3,4,5},
   settingNames="SahelanSkinOptions",
 }
 
@@ -92,6 +83,13 @@ this.isLoadSahelanHealthBar={
   settingNames="SahelanHealthBarOptions",
 }
 
+this.IsSahelanDominionDifficulty={
+  save=IvarProc.CATEGORY_EXTERNAL,
+  default=1,
+  settings={0,1,2,3},
+  settingNames="SahelanDifficultyOptions",
+}
+
 this.langStrings={
   eng={
       SahelanFreeRoamMenu="Sahelanthropus Boss Events",
@@ -99,10 +97,12 @@ this.langStrings={
       IsSahelanActiveArea="Current Active Area:",
       IsSahelanPatrolRandomArea="Randomize Active Area:",
       SahelanActiveAreaOptions={"Northern Area","Outpost 04","Yakho Oboo","Lamar Khaate","Shago Kallai","Wakh Barracks","Da wiallo Kallai","Da Ghwandai Khar","Qaria Sakhra Ee","Mountain Relay Base"},
-      SahelanSkinOptions={"Default","Black","Red","GZ","Black Sky"},
+      SahelanSkinOptions={"Default","Black","Red","GZ","Black Sky","Shagohod"},
       IsSahelanCurrentModel="Sahelanthropus Model: ",
       isLoadSahelanHealthBar="Health bar:",
       SahelanHealthBarOptions = {"Hide health bar","Show health bar"},
+      IsSahelanDominionDifficulty = "Boss Fight Difficulty:",
+      SahelanDifficultyOptions= {"Easy","Normal","Hard","Extreme"},
     },
   help={
     eng={
@@ -112,6 +112,7 @@ this.langStrings={
       IsSahelanPatrolRandomArea="Randomizes the current active area",
       IsSahelanCurrentModel="Select what model is used by Sahelanthropus",
       isLoadSahelanHealthBar="Shows or hides the health bar, only affects Dominion AI mode",
+      IsSahelanDominionDifficulty="Select the difficulty of the boss fight, does not affect Hellbound AI",
     },
   },
 }
@@ -219,7 +220,7 @@ this.SahelanRouteListForAfgh = {
   },
 }
 
-this.setOnBootSneakRoutes = {
+this.setOnBootSneakRoutesAfgh = {
   [0]="rt_shln_SBtoOKB_s_0015",
   [1]="rt_shln_Null",
   [2]="rt_shln_Null",
@@ -232,7 +233,7 @@ this.setOnBootSneakRoutes = {
   [9]="rt_shlnArea9_s_0000",
 }
 
-this.setOnBootCautionRoutes = {
+this.setOnBootCautionRoutesAfgh = {
   [0]="rt_shln_SBtoOKB_c_0055",
   [1]="rt_shln_Null",
   [2]="rt_shln_Null",
@@ -245,7 +246,20 @@ this.setOnBootCautionRoutes = {
   [9]="rt_shlnArea9_c_0000",
 }
 
-this.SetCautionRouteAlert = {
+this.SahelanAreasAfghBaseRoutes = {
+  [0]= "rts_shln_b_0000",
+  [1]= "rt_shln_Null",
+  [2]= "rt_shln_Null",
+  [3]= "rt_shln_Null",
+  [4]= "rt_shln_Null",
+  [5]= "rt_shln_Null",
+  [6]= "rt_shln_Null",
+  [7]= "rt_shln_Null",
+  [8]= "rt_shln_Null",
+  [9]= "rt_shlnArea9_b_0000",
+}
+
+this.SetCautionRouteAlertAfgh = {
   [0]={
     "rts_shln_c_0020",
     "rts_shln_c_0030",
@@ -474,19 +488,20 @@ this.MissileRouteListForAfgh = {
   },
 }
 
+this.SahelanLifePartsTable = {
+  [0]={Body=12000,Bp=900,Head=3500,ArmR=900,ArmL=900,ThighR=900,ThighL=900,LegR=900,LegL=900,RGun=1400,Ldr=900,Tnk=900,Shield=22000,PTLF=260,PTRF=260,PTLB=260,PTRB=260},
+  [1]={Body=12000,Bp=1200,Head=4500,ArmR=1200,ArmL=1200,ThighR=1200,ThighL=1200,LegR=1200,LegL=1200,RGun=1400,Ldr=1200,Tnk=1200,Shield=25000,PTLF=560,PTRF=560,PTLB=560,PTRB=560},
+  [2]={Body=16500,Bp=3500,Head=4500,ArmR=2500,ArmL=2500,ThighR=2500,ThighL=2500,LegR=2500,LegL=2500,RGun=4400,Ldr=3500,Tnk=4000,Shield=30000,PTLF=1200,PTRF=1200,PTLB=1200,PTRB=1200},
+  [3]={Body=18000,Bp=5500,Head=6500,ArmR=3500,ArmL=3500,ThighR=3500,ThighL=3500,LegR=3500,LegL=3500,RGun=5500,Ldr=5500,Tnk=5500,Shield=35000,PTLF=2200,PTRF=2200,PTLB=2200,PTRB=2200},
+  [4]={Body=30000,Bp=30000,Head=30000,ArmR=30000,ArmL=30000,ThighR=30000,ThighL=30000,LegR=30000,LegL=30000,Tnk=30000,Shield=30000,PTLF=30000,PTRF=30000,PTLB=30000,PTRB=30000},
+}
 
-this.SahelanLifeTable = {
-  Body  = 6000,  
-  Bp    = 5000,  
-  Head  = 12000,  
-  ArmR  = 3000,  
-  ArmL  = 3000,  
-  ThighR  = 3500,  
-  ThighL  = 3500,  
-  LegR  = 3000,  
-  LegL  = 3000,  
-  Tnk   = 2500,
-  Shield = 25000,
+this.SahelanMainLifeTable = {
+  [0]=31000,
+  [1]=45000,
+  [2]=65000,
+  [3]=90000,
+  [4]=500000,
 }
 
 
@@ -500,7 +515,6 @@ end
 
 this.SetSahelanPartsLife =function(sahelanLifeTable)
   for partsName,partsLife in pairs ( sahelanLifeTable ) do
-
     local gameObjectId = {type="TppSahelan2", group=0, index=0}
     local command = { id = "SetMaxPartsLife", parts = partsName, life = partsLife }
     GameObject.SendCommand( gameObjectId, command )
@@ -517,6 +531,25 @@ this.SetSahelanTypeDominionAIExtreme = function()
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
   local command = {id="SetStageType", index = 2, }  
   GameObject.SendCommand(gameObjectId, command)
+end
+
+this.SetSahelanTypeDominionAINormal = function()
+  local gameObjectId = {type="TppSahelan2", group=0, index=0}
+  local command = {id="SetStageType", index = 1, }  
+  GameObject.SendCommand(gameObjectId, command)
+end
+
+this.SetDominionModeStageTypes = function()
+  local gameObjectId = {type="TppSahelan2", group=0, index=0}
+
+  if Ivars.IsSahelanDominionDifficulty:Get() == 0 then
+    local command = {id="SetStageType", index = 1, }  
+    GameObject.SendCommand(gameObjectId, command)    
+  else
+    local command = {id="SetStageType", index = 2, }  
+    GameObject.SendCommand(gameObjectId, command)
+  end
+
 end
 
 
@@ -574,7 +607,7 @@ end
 
 this.SetSahelanSearchRouteList = function()
 
-  local sahelanRouteTableAlert = this.SetCautionRouteAlert[Ivars.IsSahelanActiveArea:Get()]
+  local sahelanRouteTableAlert = this.SetCautionRouteAlertAfgh[Ivars.IsSahelanActiveArea:Get()]
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
   local indexNum = 0
 
@@ -709,8 +742,8 @@ this.StartHeliAntiSahelan = function()
 end
 
 this.KeepCommandPostAlert = function ()
-  local gameObjectId = { type="TppCommandPost2" }
   local command = { id = "SetKeepAlert", enable=true }
+  local gameObjectId = { type="TppCommandPost2" }
   GameObject.SendCommand( gameObjectId, command )
 end
 
@@ -732,14 +765,159 @@ end
 
 this.RewardPlayerAfterDefeatSally = function()
   
-  TppMotherBaseManagement.AddTempResource{resourceId=0,count=700000}
-  TppMotherBaseManagement.AddTempResource{resourceId=1,count=300000}
-  TppMotherBaseManagement.AddTempResource{resourceId=2,count=500000}
-  TppMotherBaseManagement.AddTempResource{resourceId=3,count=200000}
-  TppMotherBaseManagement.AddTempResource{resourceId=4,count=35000}
-  TppMotherBaseManagement.AddTempResource{resourceId=29,count=1}
+  local CurrentDifficulty = Ivars.IsSahelanDominionDifficulty:Get()
+  
 
-  InfCore.DebugPrint("Sahelan defeat reward sent, please trigger a checkpoint to receive them")
+  if CurrentDifficulty == 0 then
+    
+    InfCore.Log("Sahelan beaten on Easy")
+
+    TppMotherBaseManagement.AddHeroicPoint{heroicPoint=1300}
+    TppMotherBaseManagement.AddTempResource{resourceId=0,count=150000}
+    TppMotherBaseManagement.AddTempResource{resourceId=1,count=110000}
+    TppMotherBaseManagement.AddTempResource{resourceId=2,count=85000}
+    TppMotherBaseManagement.AddTempResource{resourceId=3,count=60000}
+    TppMotherBaseManagement.AddTempResource{resourceId=4,count=8000}
+    TppMotherBaseManagement.AddGmp{gmp=500000}
+
+    TppCheckPoint.Update{safetyCurrentPosition=true}
+
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_fuel", 150000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_bio", 110000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_c_metal", 85000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_m_metal", 60000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_p_metal", 8000 )
+
+    TppUiCommand.AnnounceLogViewLangId("announce_fame_up", 1300)
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_gmp", 500000)
+
+    --HasSahelanBeenBeaten = true
+  elseif CurrentDifficulty == 1 then
+    InfCore.Log("Sahelan beaten on Normal")
+
+    local TotalParasites = 2 * TotalBrokenParts
+
+    TppMotherBaseManagement.AddHeroicPoint{heroicPoint=2500}
+    TppMotherBaseManagement.AddTempResource{resourceId=0,count=280000}
+    TppMotherBaseManagement.AddTempResource{resourceId=1,count=180000}
+    TppMotherBaseManagement.AddTempResource{resourceId=2,count=165000}
+    TppMotherBaseManagement.AddTempResource{resourceId=3,count=90000}
+    TppMotherBaseManagement.AddTempResource{resourceId=4,count=18000}
+    TppMotherBaseManagement.AddTempResource{resourceId=30,count=TotalParasites}
+    TppMotherBaseManagement.AddTempResource{resourceId=31,count=TotalParasites}
+    TppMotherBaseManagement.AddTempResource{resourceId=32,count=TotalParasites}
+    TppMotherBaseManagement.AddGmp{gmp=450000 }
+    TppMotherBaseManagement.AddTempResource{resourceId=29,count=1}
+
+    TppCheckPoint.Update{safetyCurrentPosition=true}
+
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_fuel", 280000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_bio", 180000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_c_metal", 165000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_m_metal", 90000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_p_metal", 18000 )
+
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_type_parasite", TotalParasites )
+
+    TppUiCommand.AnnounceLogViewLangId("announce_fame_up", 2500)
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_gmp", 450000 )
+
+  elseif CurrentDifficulty == 2 then
+    InfCore.Log("Sahelan beaten on Hard")
+
+    local TotalParasites = 4 * TotalBrokenParts
+
+    TppMotherBaseManagement.AddHeroicPoint{heroicPoint=4500}
+    TppMotherBaseManagement.AddTempResource{resourceId=0,count=450000}
+    TppMotherBaseManagement.AddTempResource{resourceId=1,count=300000}
+    TppMotherBaseManagement.AddTempResource{resourceId=2,count=250000}
+    TppMotherBaseManagement.AddTempResource{resourceId=3,count=180000}
+    TppMotherBaseManagement.AddTempResource{resourceId=4,count=35000}
+    TppMotherBaseManagement.AddTempResource{resourceId=30,count=TotalParasites}
+    TppMotherBaseManagement.AddTempResource{resourceId=31,count=TotalParasites}
+    TppMotherBaseManagement.AddTempResource{resourceId=32,count=TotalParasites}
+    TppMotherBaseManagement.AddGmp{gmp=800000 }
+    TppMotherBaseManagement.AddTempResource{resourceId=29,count=1}
+
+    TppCheckPoint.Update{safetyCurrentPosition=true}
+
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_fuel", 450000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_bio", 300000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_c_metal", 250000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_m_metal", 180000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_p_metal", 35000 )
+
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_type_parasite", TotalParasites )
+
+    TppUiCommand.AnnounceLogViewLangId("announce_fame_up", 4500)
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_gmp", 800000 )
+
+  elseif CurrentDifficulty == 3 then
+    InfCore.Log("Sahelan beaten on Extreme")
+
+    local TotalParasites = 8 * TotalBrokenParts
+
+    TppMotherBaseManagement.AddHeroicPoint{heroicPoint=8000}
+    TppMotherBaseManagement.AddTempResource{resourceId=0,count=1000000}
+    TppMotherBaseManagement.AddTempResource{resourceId=1,count=750000}
+    TppMotherBaseManagement.AddTempResource{resourceId=2,count=650000}
+    TppMotherBaseManagement.AddTempResource{resourceId=3,count=350000}
+    TppMotherBaseManagement.AddTempResource{resourceId=4,count=65000}
+    TppMotherBaseManagement.AddTempResource{resourceId=30,count=TotalParasites}
+    TppMotherBaseManagement.AddTempResource{resourceId=31,count=TotalParasites}
+    TppMotherBaseManagement.AddTempResource{resourceId=32,count=TotalParasites}
+    TppMotherBaseManagement.AddGmp{gmp=3500000 }
+    TppMotherBaseManagement.AddTempResource{resourceId=29,count=2}
+
+    TppCheckPoint.Update{safetyCurrentPosition=true}
+
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_fuel", 1000000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_bio", 750000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_c_metal", 650000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_m_metal", 350000 )
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_p_metal", 65000 )
+
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_resource", "resource_type_parasite", TotalParasites )
+
+    TppUiCommand.AnnounceLogViewLangId("announce_fame_up", 8000)
+    TppUiCommand.AnnounceLogViewLangId("announce_ops_get_gmp", 3500000 )
+
+  else
+    return
+  end
+
+end
+
+this.DisableDDSupport = function()
+
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP_BULLET, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP_WEAPON, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP_LOADOUT, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP_VEHICLE, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_ARTILLERY, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_SMOKE, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_SLEEP, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_SMOKE, false)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_CHAFF, false)
+  
+end
+
+this.ResetDisableDDSupport = function()
+  
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP_BULLET, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP_WEAPON, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP_LOADOUT, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_DROP_VEHICLE, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_ARTILLERY, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_SMOKE, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_SLEEP, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_SMOKE, true)
+  TppUiCommand.SetMbTopMenuItemActive( TppTerminal.MBDVCMENU.MSN_ATTACK_CHAFF, true)
+
 end
 
 
@@ -749,19 +927,19 @@ this.SetUpSahelanAfghHellboundAI = function()
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
   local CombatGradecommand = { id = "SetCombatGrade", defenseValue=60000, defenseValueForWeakPoint=20000, offenseGrade=15, defenseGrade=15 }
 
-  local CurrentBaseRoute = SahelanAreasAfghBaseRoutes[Ivars.IsSahelanActiveArea:Get()]
+  local CurrentBaseRoute = this.SahelanAreasAfghBaseRoutes[Ivars.IsSahelanActiveArea:Get()]
 
-  this.SetSahelanSneakRoute(this.setOnBootSneakRoutes[Ivars.IsSahelanActiveArea:Get()])
-  this.SetSahelanCautionRoute(this.setOnBootCautionRoutes[Ivars.IsSahelanActiveArea:Get()])
+  this.SetSahelanSneakRoute(this.setOnBootSneakRoutesAfgh[Ivars.IsSahelanActiveArea:Get()])
+  this.SetSahelanCautionRoute(this.setOnBootCautionRoutesAfgh[Ivars.IsSahelanActiveArea:Get()])
   
   GameObject.SendCommand(gameObjectId, CombatGradecommand)
   this.UpdateSahelanBaseRoute( CurrentBaseRoute )
   -- Sally wont move on alert without routes here
-  this.SetSahelanSearchRouteList()
+  --this.SetSahelanSearchRouteList()
   --this.SetSahelanRouteLink()
   this.SetSahelanMissileRouteList(this.MissileRouteListForAfgh[Ivars.IsSahelanActiveArea:Get()])
-  this.SetSahelanLife(100000)
-  this.SetSahelanPartsLife(this.SahelanLifeTable)
+  this.SetSahelanLife(this.SahelanMainLifeTable[4])
+  this.SetSahelanPartsLife(this.SahelanLifePartsTable[4])
 
 end
 
@@ -771,11 +949,9 @@ this.SetUpSahelanAfghDominionAI = function()
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
   local CombatGradecommand = { id = "SetCombatGrade", defenseValue=60000, defenseValueForWeakPoint=20000, offenseGrade=15, defenseGrade=15 }
   GameObject.SendCommand(gameObjectId, CombatGradecommand)
-
   this.UpdateSahelanBaseRoute( "rt_shlnArea9_b_DominionOutOfBounds" )
-
-  this.SetSahelanLife(110000)
-  this.SetSahelanPartsLife(this.SahelanLifeTable)
+  this.SetSahelanLife(this.SahelanMainLifeTable[Ivars.IsSahelanDominionDifficulty:Get()])
+  this.SetSahelanPartsLife(this.SahelanLifePartsTable[Ivars.IsSahelanDominionDifficulty:Get()])
 
 end
 
@@ -914,7 +1090,7 @@ function this.MessagesForHybridAI()
                               PlayerIsDetected = true
                             end
                           elseif CPPhaseSwitchCount >= 5 and DidSahelanAISwitch == false then
-                            this.SetSahelanTypeDominionAIExtreme()
+                            this.SetDominionModeStageTypes()
                             DidSahelanAISwitch = true
                           end         
                         end
@@ -1056,23 +1232,25 @@ function this.MessagesForDominionAI()
                         msg = "ChangePhase",
                         func = function( cpId, phase )
                           if phase == TppGameObject.PHASE_ALERT then
-                            CPPhaseSwitchCount = CPPhaseSwitchCount + 1
-                            if CPPhaseSwitchCount >= 1 then
+                            
+                            if CPPhaseSwitchCount <= 0 then
+                              CPPhaseSwitchCount = CPPhaseSwitchCount + 1
                               -- No clue what this does
                               TppMission.StartBossBattle()
                               --Activates sahelan
-                              this.SetSahelanTypeDominionAIExtreme()
-                              -- Activates sahelan fog, will leave it here for now
-                              WeatherManager.RequestTag("Sahelan_fog", 40 )
+                              this.SetDominionModeStageTypes()
                               -- Sets all CPs on aler and keeps them that way
-                              --this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
-                              -- keeps all CPs on alert
-                              --this.KeepCommandPostAlert()
+                              if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+                                this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
+                                this.KeepCommandPostAlert()
+                              end
                               -- sets the heli to Anti Sahelan mode, very important
                               this.SetUpSupportHeli()
+                              TotalBrokenParts = 0
                               -- debug log
                               InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
                             end
+
                           end         
                         end
                       },
@@ -1084,8 +1262,10 @@ function this.MessagesForDominionAI()
                             InfCore.Log("SahelanBossEvents: sahelan dead")
                             --disable red fog 
                             this.StopRedStorm()
-                            -- Disable CP keep alert
-                            this.DisableKeepCommandPostAlert()
+                            if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+                                this.DisableKeepCommandPostAlert()
+                                this.ResetDisableDDSupport()
+                            end
                             --end boss fight
                             TppMission.FinishBossBattle()
                             -- sets support heli to default behaviour
@@ -1093,7 +1273,7 @@ function this.MessagesForDominionAI()
                             -- rewards for player
                             this.RewardPlayerAfterDefeatSally()
                             -- debug total weak hit count
-                            InfCore.Log("SahelanBossEvents: Weak Hit Count total: "..WeakpointHitCounts)
+                            --InfCore.Log("SahelanBossEvents: Weak Hit Count total: "..WeakpointHitCounts)
                           end
                         end,
                       },
@@ -1111,6 +1291,9 @@ function this.MessagesForDominionAI()
                         msg = "SahelanHeadBroken",
                         func = function()
                           InfCore.Log("SahelanBossEvents: sahelan head broken")
+                          if Ivars.IsSahelanDominionDifficulty:Get() == 1 then
+                            this.SetSahelanTypeDominionAINormal()
+                          end
                         end,
                       },
                       -- ### unknown when called exactly, calls a airtrike in sahelan
@@ -1133,7 +1316,21 @@ function this.MessagesForDominionAI()
                         msg = "SahelanGrenadeExplosion",
                         func = function()
                             -- number set here defines the duration in seconds, can be canceled by fight sequence changing
-                            this.StartRedStrom(100)
+                            if Ivars.IsSahelanDominionDifficulty:Get() == 0 then
+                              this.StartRedStrom(60)
+                            elseif Ivars.IsSahelanDominionDifficulty:Get() == 1 then
+                              this.StartRedStrom(90)
+                            elseif Ivars.IsSahelanDominionDifficulty:Get() == 2 then
+                              Player.UnsetEquip{ slotType = PlayerSlotType.PRIMARY_1, dropPrevEquip = false,}
+                              Player.UnsetEquip{ slotType = PlayerSlotType.PRIMARY_2, dropPrevEquip = false,}
+                              this.StartRedStrom(110)
+                            elseif Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+                              this.StartRedStrom(160)
+                              Player.UnsetEquip{ slotType = PlayerSlotType.PRIMARY_1, dropPrevEquip = false,}
+                              Player.UnsetEquip{ slotType = PlayerSlotType.PRIMARY_2, dropPrevEquip = false,}
+                            else
+                              return
+                            end
                         end,
                       },
                       -- ### Triggers after sahelan starts using the railgun for the first time ###
@@ -1182,6 +1379,7 @@ function this.MessagesForDominionAI()
                         msg = "SahelanPartsBroken",
                         func = function()
                           InfCore.Log("SahelanBossEvents: SahelanPartsBroken")
+                          TotalBrokenParts = TotalBrokenParts + 1
                         end,
                       },
                       -- ### Triggers when the player hits the weak point (glowing chest when it does sword attacks ?) ###
@@ -1246,6 +1444,9 @@ this.SetUpEnemy = function ()
     CPPhaseSwitchCount = 0
     PlayerIsDetected = false
     DidSahelanAISwitch = false
+    if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+      this.DisableDDSupport()
+    end
   end
 end 
 
@@ -1253,12 +1454,15 @@ end
 
 function this.OnReload(missionTable)
   if Ivars.IsSahelanActiveIvar:Is(1) then
-      if vars.missionCode==30010 then
-        this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
-      end
-      CPPhaseSwitchCount = 0
-      PlayerIsDetected = false
-      DidSahelanAISwitch = false
+    if vars.missionCode==30010 then
+      this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
+    end
+    CPPhaseSwitchCount = 0
+    PlayerIsDetected = false
+    DidSahelanAISwitch = false
+    if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+      this.DisableDDSupport()
+    end
   end   
 end
 

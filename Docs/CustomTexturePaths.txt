@@ -3,3 +3,13 @@
 /Assets/tpp/mecha/mgs/Pictures/mgs0_camo2_bsm
 /Assets/tpp/mecha/mgs/Pictures/mgs0_camo3_bsm
 /Assets/tpp/mecha/mgs/Pictures/mgs0_camo4_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_camo5_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_main0_body0_soviet_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_main0_body1_soviet_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_main0_body2_soviet_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_Sdecal_0_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_skull_red_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_Sdecal_0_nrm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_main0_body0_bre_soviet_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_main0_body1_bre_soviet_bsm
+/Assets/tpp/mecha/mgs/Pictures/mgs0_main0_body2_bre_soviet_bsm

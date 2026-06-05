@@ -4,3 +4,11 @@ mgs0_main0_body1
 mgs0_main0_body1_bre
 mgs0_main0_body2
 mgs0_main0_body2_bre
+mgs0_main0_body0_bre_Soviet
+mgs0_main0_body0_Soviet
+mgs0_main0_body1_bre_Soviet
+mgs0_main0_body1_Soviet
+mgs0_main0_body2_bre_Soviet
+mgs0_main0_body2_Soviet
+mgs0_SkullDecal
+mgs0_SovietDecal

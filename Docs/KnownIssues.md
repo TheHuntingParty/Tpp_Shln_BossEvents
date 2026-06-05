@@ -18,3 +18,4 @@
 - If Sahelanthropus uses a grenade while nearby vehicles are been driven by enemies, said vehicles become invincible
 - Enemy helicopter is not affected by red fog
 - Sahelanthropus Shield mesh wont swap after being broken
+- Sahelanthropus may fire the search missiles towards enemy helis instead of pequod if they are around before the 1st railgun sequence

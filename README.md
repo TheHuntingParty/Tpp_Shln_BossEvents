@@ -9,7 +9,7 @@ The main goal of this project is to provide MG Sahelanthopus with all informatio
 | Hellbound AI | Partially Supported  |
 | Dominion AI | Supported  |
 | Dominion AI (Extreme)  | Supported  |
-| Hybrid Mode  | Partially Supported  |
+| Hybrid Mode  | Partially Supported (has issues regarding collision)  |
 
 You can read more about the stage types [Here](https://mgsvmoddingwiki.github.io/AI/mgs/#stage-types "Here")
 
