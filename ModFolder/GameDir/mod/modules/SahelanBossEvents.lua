@@ -31,6 +31,9 @@ this.registerIvars={
   "IsSahelanCurrentModel",
   "isLoadSahelanHealthBar",
   "IsSahelanDominionDifficulty",
+  "IsSahelanTimer",
+  "IsSahelanTimerLow", 
+  "IsSahelanTimerHigh",     
 }
 
 this.SahelanFreeRoamMenu={
@@ -42,6 +45,9 @@ this.SahelanFreeRoamMenu={
     "Ivars.IsSahelanCurrentModel",
     "Ivars.isLoadSahelanHealthBar",
     "Ivars.IsSahelanDominionDifficulty",
+    "Ivars.IsSahelanTimer",	
+	"Ivars.IsSahelanTimerLow", 
+	"Ivars.IsSahelanTimerHigh", 	
   }
 }
 
@@ -90,6 +96,23 @@ this.IsSahelanDominionDifficulty={
   settingNames="SahelanDifficultyOptions",
 }
 
+this.IsSahelanTimer={
+  save=IvarProc.CATEGORY_EXTERNAL,
+  default=0,
+  settings={0,1},
+  settingNames="SahelanTimerOptions",
+}
+
+this.IsSahelanTimerLow={
+  default=15,
+  range={max=10000,min=0,increment=1},
+}  
+
+this.IsSahelanTimerHigh={
+  default=60,
+  range={max=10000,min=0,increment=1},
+}  
+
 this.langStrings={
   eng={
       SahelanFreeRoamMenu="Sahelanthropus Boss Events",
@@ -103,6 +126,10 @@ this.langStrings={
       SahelanHealthBarOptions = {"Hide health bar","Show health bar"},
       IsSahelanDominionDifficulty = "Boss Fight Difficulty:",
       SahelanDifficultyOptions= {"Easy","Normal","Hard","Extreme"},
+      IsSahelanTimer = "Start Condition:",
+      SahelanTimerOptions= {"Alert","Random"},
+      IsSahelanTimerLow = "Random Range Low:",
+      IsSahelanTimerHigh = "Random Range High:",	  
     },
   help={
     eng={
@@ -113,6 +140,9 @@ this.langStrings={
       IsSahelanCurrentModel="Select what model is used by Sahelanthropus",
       isLoadSahelanHealthBar="Shows or hides the health bar, only affects Dominion AI mode",
       IsSahelanDominionDifficulty="Select the difficulty of the boss fight, does not affect Hellbound AI",
+      IsSahelanTimer="Select if the fight starts on alert, or randomly within a time range",
+      IsSahelanTimerLow = "Set the lowest number in the random time range in minutes",
+      IsSahelanTimerHigh = "Set the Highest number in the random time range in minutes",		  
     },
   },
 }
@@ -1218,6 +1248,29 @@ function this.MessagesForHybridAI()
                       this.StopRedStorm()
                     end
                   },
+				  --{	
+					-- Starts the fight when the timer's value is reached
+                    --msg = "Finish",
+                    --sender = "SpawnTimer",
+                    --func = function()
+						--if Ivars.IsSahelanTimer:Get() == 1 then	
+							-- No clue what this does
+							--TppMission.StartBossBattle()
+							--Activates sahelan
+							--this.SetDominionModeStageTypes()
+							-- Sets all CPs on aler and keeps them that way
+							--if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+								--this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
+								--this.KeepCommandPostAlert()
+							--end
+							-- sets the heli to Anti Sahelan mode, very important
+							--this.SetUpSupportHeli()
+							--TotalBrokenParts = 0
+							-- debug log
+							--InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
+						--end
+					--end
+                  --},					  
         }, 
       }
 end
@@ -1231,28 +1284,28 @@ function this.MessagesForDominionAI()
                       { 
                         msg = "ChangePhase",
                         func = function( cpId, phase )
-                          if phase == TppGameObject.PHASE_ALERT then
-                            
-                            if CPPhaseSwitchCount <= 0 then
-                              CPPhaseSwitchCount = CPPhaseSwitchCount + 1
-                              -- No clue what this does
-                              TppMission.StartBossBattle()
-                              --Activates sahelan
-                              this.SetDominionModeStageTypes()
-                              -- Sets all CPs on aler and keeps them that way
-                              if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
-                                this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
-                                this.KeepCommandPostAlert()
-                              end
-                              -- sets the heli to Anti Sahelan mode, very important
-                              this.SetUpSupportHeli()
-                              TotalBrokenParts = 0
-                              -- debug log
-                              InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
-                            end
-
-                          end         
-                        end
+							if Ivars.IsSahelanTimer:Get() == 0 then	
+								if phase == TppGameObject.PHASE_ALERT then								
+									if CPPhaseSwitchCount <= 0 then
+										CPPhaseSwitchCount = CPPhaseSwitchCount + 1
+										-- No clue what this does
+										TppMission.StartBossBattle()
+										--Activates sahelan
+										this.SetDominionModeStageTypes()
+										-- Sets all CPs on aler and keeps them that way
+										if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+											this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
+											this.KeepCommandPostAlert()
+										end
+										-- sets the heli to Anti Sahelan mode, very important
+										this.SetUpSupportHeli()
+										TotalBrokenParts = 0
+										-- debug log
+										InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
+									end
+								end
+							end         
+						end
                       },
                       {
                         -- ### Checks if sahelan is dead###
@@ -1406,6 +1459,29 @@ function this.MessagesForDominionAI()
                       this.StopRedStorm()
                     end
                   },
+                  {
+					-- Starts the fight when the timer's value is reached
+                    msg = "Finish",
+                    sender = "SpawnTimer",
+                    func = function()
+						if Ivars.IsSahelanTimer:Get() == 1 then	
+							-- No clue what this does
+							TppMission.StartBossBattle()
+							--Activates sahelan
+							this.SetDominionModeStageTypes()
+							-- Sets all CPs on aler and keeps them that way
+							if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+								this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
+								this.KeepCommandPostAlert()
+							end
+							-- sets the heli to Anti Sahelan mode, very important
+							this.SetUpSupportHeli()
+							TotalBrokenParts = 0
+							-- debug log
+							InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
+						end
+					end
+                  },				  
         }, 
       }
 end
@@ -1428,6 +1504,8 @@ function this.Init(missionTable)
           func = function ()  this.UpdateSahelanRoute( trapName ) end
         }
         table.insert( this.sahelanTraps, trapTable )
+		-- Sets the random timer for starting fight
+		this.SetTimer("SpawnTimer", math.random(Ivars.IsSahelanTimerLow:Get()*60,Ivars.IsSahelanTimerHigh:Get()*60))
       end
       this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
     end 
@@ -1475,5 +1553,15 @@ function this.OnMessage(sender,messageId,arg0,arg1,arg2,arg3,strLogText)
   end   
 end
  
+this.SetTimer = function( timeString, seconds )
+	if GkEventTimerManager.IsTimerActive( timeString ) then		
+		GkEventTimerManager.Stop( timeString )
+		GkEventTimerManager.Start( timeString, seconds )
+	else
+		
+		GkEventTimerManager.Start( timeString, seconds )
+	end
+
+end
  
 return this 
