@@ -1,5 +1,9 @@
 # Changelogs
 
+#### r10a
+- Added the missing route `rt_shlnArea9_b_DominionOutOfBounds` to the Guantanamo Area0 pack, it was causing a game crash
+
+
 #### r10
 - Added full support of both AI modes to US Naval Prison Facility (gntn)
 - Removed message table for Hybrid AI
