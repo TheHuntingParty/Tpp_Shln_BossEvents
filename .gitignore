@@ -4,8 +4,8 @@ shln_freeroamGeneral.lua
 /ModFolder/Assets/tpp/pack/location/afgh/pack_large/afgh_bridge_fpk
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0_fpk
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_0_fpkd
-/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn_fpk
-/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_hellbound_cmn_fpkd
+/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_0_cmn_fpk
+/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_0_cmn_fpkd
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_0_fpk
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_0_fpkd
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_1_fpk
@@ -599,8 +599,8 @@ shln_freeroamGeneral.lua
 /DomAIFiles/Assets/tpp/pack/location/afgh/pack_small/151/afgh_151_126_fpkd
 /DomAIFiles/Assets/tpp/pack/location/afgh/pack_small/151/afgh_151_127_fpk
 /DomAIFiles/Assets/tpp/pack/location/afgh/pack_small/151/afgh_151_127_fpkd
-/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn_fpk
-/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn_fpkd
+/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn_fpk
+/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn_fpkd
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_0_fpk
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_0_fpkd
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_1_fpk
@@ -616,3 +616,5 @@ shln_freeroamGeneral.lua
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_5_fpk
 /ModFolder/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_5_fpkd
 /PDN
+/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/areas_gntn/gntn_area_0_fpk
+/ModFolder/Assets/tpp/pack/mission2/shln/freeroam/areas_gntn/gntn_area_0_fpkd

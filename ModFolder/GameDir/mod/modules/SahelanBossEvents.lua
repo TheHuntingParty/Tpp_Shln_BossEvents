@@ -8,7 +8,6 @@ local SendCommand = GameObject.SendCommand
 local PlayerIsDetected = false
 local SAHELAN_WEAKENING_COUNT = 2 
 local CPPhaseSwitchCount = 0
-local DidSahelanAISwitch = false
 local DidSahelanUseRailgun = false
 local WeakpointHitCounts = 0
 local ActiveAreaRandomID = 0
@@ -22,6 +21,7 @@ this.SahelanCounter = 0
 
 this.registerMenus={
   "SahelanFreeRoamMenu",
+  "SahelanFreeRoamMenuGNTN",
 }
 
 this.registerIvars={
@@ -34,6 +34,9 @@ this.registerIvars={
   "IsSahelanTimer",
   "IsSahelanTimerLow", 
   "IsSahelanTimerHigh",     
+  "IsSahelanActiveInGntn",
+  "IsSahelanAIModeGntn",
+  "IsSahelanHellboundActiveAtStartGntn",
 }
 
 this.SahelanFreeRoamMenu={
@@ -46,8 +49,8 @@ this.SahelanFreeRoamMenu={
     "Ivars.isLoadSahelanHealthBar",
     "Ivars.IsSahelanDominionDifficulty",
     "Ivars.IsSahelanTimer",	
-	"Ivars.IsSahelanTimerLow", 
-	"Ivars.IsSahelanTimerHigh", 	
+    "Ivars.IsSahelanTimerLow", 
+    "Ivars.IsSahelanTimerHigh", 	
   }
 }
 
@@ -104,14 +107,38 @@ this.IsSahelanTimer={
 }
 
 this.IsSahelanTimerLow={
-  default=15,
-  range={max=10000,min=0,increment=1},
+  save=IvarProc.CATEGORY_EXTERNAL,
+  default=10,
+  range={max=10000,min=1,increment=1},
 }  
 
 this.IsSahelanTimerHigh={
-  default=60,
-  range={max=10000,min=0,increment=1},
+  save=IvarProc.CATEGORY_EXTERNAL,
+  default=15,
+  range={max=10000,min=1,increment=1},
 }  
+
+this.SahelanFreeRoamMenuGNTN={
+  parentRefs={"SahelanBossEvents.SahelanFreeRoamMenu"},
+  options={
+    "Ivars.IsSahelanActiveInGntn",
+    "Ivars.IsSahelanAIModeGntn",
+  }
+}
+
+this.IsSahelanActiveInGntn={
+    save=IvarProc.CATEGORY_EXTERNAL,
+    range=Ivars.switchRange,
+    settingNames="set_switch",
+    default=1,
+}
+
+this.IsSahelanAIModeGntn={
+  save=IvarProc.CATEGORY_EXTERNAL,
+  default=0,
+  settings={0,1},
+  settingNames="SahelanGntnAIModeOptions",
+}
 
 this.langStrings={
   eng={
@@ -130,6 +157,10 @@ this.langStrings={
       SahelanTimerOptions= {"Alert","Random"},
       IsSahelanTimerLow = "Random Range Low:",
       IsSahelanTimerHigh = "Random Range High:",	  
+      SahelanFreeRoamMenuGNTN="Guantanamo options",
+      IsSahelanActiveInGntn="Active in Guantanamo",
+      IsSahelanAIModeGntn="AI Mode",
+      SahelanGntnAIModeOptions = {"Hellbound AI","Dominion AI"},
     },
   help={
     eng={
@@ -143,6 +174,9 @@ this.langStrings={
       IsSahelanTimer="Select if the fight starts on alert, or randomly within a time range",
       IsSahelanTimerLow = "Set the lowest number in the random time range in minutes",
       IsSahelanTimerHigh = "Set the Highest number in the random time range in minutes",		  
+      SahelanFreeRoamMenuGNTN="Options menu for Sahelanthropus on Guantanamo",
+      IsSahelanActiveInGntn="Controls if Sahelanthropus is either active or not during free roam play in Guantanamo",
+      IsSahelanAIModeGntn="Select what AI mode to use",
     },
   },
 }
@@ -401,7 +435,7 @@ this.SetCautionRouteAlertAfgh = {
 }
 
 
-this.sahelanLinkRouteTable = {
+this.sahelanLinkRouteTableAfgh = {
   
   { { "rts_shln_s_5020", 3, }, { "rts_shln_c_5010", 2 }, }, 
 
@@ -412,7 +446,7 @@ this.sahelanLinkRouteTable = {
 
 }
 
-this.ignoreTrapList = {}
+this.ignoreTrapListAfgh = {}
 
 this.MissileRouteListForAfgh = {
   [0]={
@@ -515,6 +549,312 @@ this.MissileRouteListForAfgh = {
     "rt_SearchMissileArea9_0006",
     "rt_SearchMissileArea9_0007",
     "rt_SearchMissileArea9_0008",
+  },
+}
+
+this.SahelanRouteListForGntn = {
+  [0]={
+    Shln_GntnArea0_Trap0000 = { "rt_gntn_shlnArea0_s_0003", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0001 = { "rt_gntn_shlnArea0_s_0003", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0002 = { "rt_gntn_shlnArea0_s_0003", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0003 = { "rt_gntn_shlnArea0_s_0001", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0004 = { "rt_gntn_shlnArea0_s_0002", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0005 = { "rt_gntn_shlnArea0_s_0004", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0006 = { "rt_gntn_shlnArea0_s_0005", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0007 = { "rt_gntn_shlnArea0_s_0006", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0008 = { "rt_gntn_shlnArea0_s_0007", "rt_shln_Null", },
+    Shln_GntnArea0_Trap0009 = { "rt_gntn_shlnArea0_s_0008", "rt_shln_Null", },
+  },
+}
+
+this.setOnBootSneakRoutesGntn = {
+  [0]="rt_gntn_shlnArea0_s_0000",
+}
+
+this.setOnBootCautionRoutesGntn = {
+  [0]="rt_gntn_shlnArea0_n_0000",
+}
+
+this.SahelanAreasGntnBaseRoutes = {
+  [0]= "rt_gntn_shlnArea0_b_0000",
+}
+
+this.MissileRouteListForGntn = {
+  [0]={
+    "rt_SearchMissile_GntnArea0_0000",
+    "rt_SearchMissile_GntnArea0_0001",
+    "rt_SearchMissile_GntnArea0_0002",
+    "rt_SearchMissile_GntnArea0_0003",
+    "rt_SearchMissile_GntnArea0_0004",
+    "rt_SearchMissile_GntnArea0_0005",
+    "rt_SearchMissile_GntnArea0_0006",
+    "rt_SearchMissile_GntnArea0_0007",
+    "rt_SearchMissile_GntnArea0_0008",
+    "rt_SearchMissile_GntnArea0_0009",
+    "rt_SearchMissile_GntnArea0_0010",
+    "rt_SearchMissile_GntnArea0_0011",
+    "rt_SearchMissile_GntnArea0_0012",
+    "rt_SearchMissile_GntnArea0_0013",
+    "rt_SearchMissile_GntnArea0_0014",
+    "rt_SearchMissile_GntnArea0_0015",
+    "rt_SearchMissile_GntnArea0_0016",
+    "rt_SearchMissile_GntnArea0_0017",
+    "rt_SearchMissile_GntnArea0_0018",
+    "rt_SearchMissile_GntnArea0_0019",
+    "rt_SearchMissile_GntnArea0_0020",
+    "rt_SearchMissile_GntnArea0_0021",
+    "rt_SearchMissile_GntnArea0_0022",
+    "rt_SearchMissile_GntnArea0_0023",
+    "rt_SearchMissile_GntnArea0_0024",
+    "rt_SearchMissile_GntnArea0_0025",
+  },
+}
+
+this.ignoreTrapListGntn = {}
+
+this.sahelanLinkRouteTableGntn = {
+
+  { { "rt_gntn_shlnArea0_n_0000", 0, }, { "rt_gntn_shlnArea0_n_0001", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0001", 0, }, { "rt_gntn_shlnArea0_n_0002", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0002", 0, }, { "rt_gntn_shlnArea0_n_0003", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0003", 0, }, { "rt_gntn_shlnArea0_n_0004", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0004", 0, }, { "rt_gntn_shlnArea0_n_0005", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0004", 0, }, { "rt_gntn_shlnArea0_n_0013", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0005", 0, }, { "rt_gntn_shlnArea0_n_0006", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0006", 0, }, { "rt_gntn_shlnArea0_n_0007", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0007", 0, }, { "rt_gntn_shlnArea0_n_0008", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0008", 0, }, { "rt_gntn_shlnArea0_n_0009", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0009", 0, }, { "rt_gntn_shlnArea0_n_0010", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0010", 0, }, { "rt_gntn_shlnArea0_n_0011", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0011", 0, }, { "rt_gntn_shlnArea0_n_0012", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0013", 0, }, { "rt_gntn_shlnArea0_n_0014", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0014", 0, }, { "rt_gntn_shlnArea0_n_0015", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0015", 0, }, { "rt_gntn_shlnArea0_n_0016", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0016", 0, }, { "rt_gntn_shlnArea0_n_0017", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0017", 0, }, { "rt_gntn_shlnArea0_n_0018", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0018", 0, }, { "rt_gntn_shlnArea0_n_0019", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0015", 0, }, { "rt_gntn_shlnArea0_n_0020", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0020", 0, }, { "rt_gntn_shlnArea0_n_0021", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0021", 0, }, { "rt_gntn_shlnArea0_n_0022", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0022", 0, }, { "rt_gntn_shlnArea0_n_0023", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 14, }, { "rt_gntn_shlnArea0_n_0000", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 15, }, { "rt_gntn_shlnArea0_n_0001", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 16, }, { "rt_gntn_shlnArea0_n_0002", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 17, }, { "rt_gntn_shlnArea0_n_0003", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 18, }, { "rt_gntn_shlnArea0_n_0004", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 18, }, { "rt_gntn_shlnArea0_n_0013", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0018", 0, }, { "rt_gntn_shlnArea0_n_0024", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0024", 0, }, { "rt_gntn_shlnArea0_n_0025", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0025", 0, }, { "rt_gntn_shlnArea0_n_0026", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0026", 0, }, { "rt_gntn_shlnArea0_n_0027", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0027", 0, }, { "rt_gntn_shlnArea0_n_0023", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 21, }, { "rt_gntn_shlnArea0_n_0028", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0028", 0, }, { "rt_gntn_shlnArea0_n_0029", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0029", 0, }, { "rt_gntn_shlnArea0_n_0030", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0030", 0, }, { "rt_gntn_shlnArea0_n_0031", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0006", 0, }, { "rt_gntn_shlnArea0_n_0033", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0033", 0, }, { "rt_gntn_shlnArea0_n_0034", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0034", 0, }, { "rt_gntn_shlnArea0_n_0035", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0035", 0, }, { "rt_gntn_shlnArea0_n_0031", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0035", 0, }, { "rt_gntn_shlnArea0_n_0036", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0036", 0, }, { "rt_gntn_shlnArea0_n_0037", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0034", 0, }, { "rt_gntn_shlnArea0_n_0037", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0037", 0, }, { "rt_gntn_shlnArea0_n_0038", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0033", 0, }, { "rt_gntn_shlnArea0_n_0038", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0038", 0, }, { "rt_gntn_shlnArea0_n_0039", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0039", 0, }, { "rt_gntn_shlnArea0_n_0040", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0019", 0, }, { "rt_gntn_shlnArea0_n_0041", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0041", 0, }, { "rt_gntn_shlnArea0_n_0042", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0042", 0, }, { "rt_gntn_shlnArea0_n_0043", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0043", 0, }, { "rt_gntn_shlnArea0_n_0044", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0044", 0, }, { "rt_gntn_shlnArea0_n_0045", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0045", 0, }, { "rt_gntn_shlnArea0_n_0046", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0046", 0, }, { "rt_gntn_shlnArea0_n_0047", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0047", 0, }, { "rt_gntn_shlnArea0_n_0048", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0048", 0, }, { "rt_gntn_shlnArea0_n_0013", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0048", 0, }, { "rt_gntn_shlnArea0_n_0049", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0049", 0, }, { "rt_gntn_shlnArea0_n_0050", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0050", 0, }, { "rt_gntn_shlnArea0_n_0028", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0050", 0, }, { "rt_gntn_shlnArea0_n_0033", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0050", 0, }, { "rt_gntn_shlnArea0_n_0005", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0044", 0, }, { "rt_gntn_shlnArea0_n_0051", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0051", 0, }, { "rt_gntn_shlnArea0_n_0052", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0052", 0, }, { "rt_gntn_shlnArea0_n_0053", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0053", 0, }, { "rt_gntn_shlnArea0_n_0054", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0054", 0, }, { "rt_gntn_shlnArea0_n_0055", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0055", 0, }, { "rt_gntn_shlnArea0_n_0056", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0056", 0, }, { "rt_gntn_shlnArea0_n_0057", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0057", 0, }, { "rt_gntn_shlnArea0_n_0058", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0058", 0, }, { "rt_gntn_shlnArea0_n_0059", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0059", 0, }, { "rt_gntn_shlnArea0_n_0060", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0060", 0, }, { "rt_gntn_shlnArea0_n_0061", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0060", 0, }, { "rt_gntn_shlnArea0_n_0062", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0061", 0, }, { "rt_gntn_shlnArea0_n_0062", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0062", 0, }, { "rt_gntn_shlnArea0_n_0063", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0023", 0, }, { "rt_gntn_shlnArea0_n_0027", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0054", 0, }, { "rt_gntn_shlnArea0_n_0064", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0064", 0, }, { "rt_gntn_shlnArea0_n_0065", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0065", 0, }, { "rt_gntn_shlnArea0_n_0066", 0 }, },
+  { { "rt_gntn_shlnArea0_n_0065", 0, }, { "rt_gntn_shlnArea0_n_0067", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 24, }, { "rt_gntn_shlnArea0_n_0067", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 19, }, { "rt_gntn_shlnArea0_s_0000", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 20, }, { "rt_gntn_shlnArea0_s_0000", 1 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 21, }, { "rt_gntn_shlnArea0_s_0000", 2 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 21, }, { "rt_gntn_shlnArea0_s_0001", 0 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 20, }, { "rt_gntn_shlnArea0_s_0001", 18 }, },
+  { { "rt_gntn_shlnArea0_b_0000", 19, }, { "rt_gntn_shlnArea0_s_0001", 19 }, },
+  { { "rt_gntn_shlnArea0_s_0001", 0, }, { "rt_gntn_shlnArea0_s_0000", 2 }, },
+  { { "rt_gntn_shlnArea0_s_0000", 1, }, { "rt_gntn_shlnArea0_s_0001", 19 }, },
+  { { "rt_gntn_shlnArea0_s_0002", 18, }, { "rt_gntn_shlnArea0_s_0000", 6 }, },
+  { { "rt_gntn_shlnArea0_s_0002", 19, }, { "rt_gntn_shlnArea0_s_0000", 7 }, },
+  { { "rt_gntn_shlnArea0_s_0002", 20, }, { "rt_gntn_shlnArea0_s_0000", 8 }, },
+  { { "rt_gntn_shlnArea0_s_0002", 22, }, { "rt_gntn_shlnArea0_s_0000", 10 }, },
+  { { "rt_gntn_shlnArea0_s_0002", 23, }, { "rt_gntn_shlnArea0_s_0000", 11 }, },
+  { { "rt_gntn_shlnArea0_s_0002", 24, }, { "rt_gntn_shlnArea0_b_0000", 20 }, },
+  { { "rt_gntn_shlnArea0_s_0001", 0, }, { "rt_gntn_shlnArea0_s_0002", 0 }, },
+  { { "rt_gntn_shlnArea0_s_0001", 1, }, { "rt_gntn_shlnArea0_s_0002", 21 }, },
+  { { "rt_gntn_shlnArea0_s_0001", 2, }, { "rt_gntn_shlnArea0_s_0002", 20 }, },
+  { { "rt_gntn_shlnArea0_s_0001", 1, }, { "rt_gntn_shlnArea0_s_0002", 20 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 0, }, { "rt_gntn_shlnArea0_b_0000", 21 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 0, }, { "rt_gntn_shlnArea0_b_0000", 33 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 0, }, { "rt_gntn_shlnArea0_b_0000", 34 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 0, }, { "rt_gntn_shlnArea0_s_0000", 2 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 1, }, { "rt_gntn_shlnArea0_s_0000", 3 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 14, }, { "rt_gntn_shlnArea0_s_0000", 7 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 15, }, { "rt_gntn_shlnArea0_s_0000", 8 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 32, }, { "rt_gntn_shlnArea0_s_0000", 13 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 33, }, { "rt_gntn_shlnArea0_s_0000", 0 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 34, }, { "rt_gntn_shlnArea0_s_0000", 1 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 33, }, { "rt_gntn_shlnArea0_s_0001", 18 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 34, }, { "rt_gntn_shlnArea0_s_0001", 19 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 17, }, { "rt_gntn_shlnArea0_s_0001", 2 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 21, }, { "rt_gntn_shlnArea0_s_0001", 7 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 22, }, { "rt_gntn_shlnArea0_s_0001", 8 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 23, }, { "rt_gntn_shlnArea0_s_0001", 9 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 24, }, { "rt_gntn_shlnArea0_s_0001", 10 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 0, }, { "rt_gntn_shlnArea0_s_0002", 0 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 34, }, { "rt_gntn_shlnArea0_s_0002", 24 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 1, }, { "rt_gntn_shlnArea0_s_0002", 1 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 2, }, { "rt_gntn_shlnArea0_s_0002", 2 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 3, }, { "rt_gntn_shlnArea0_s_0002", 3 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 4, }, { "rt_gntn_shlnArea0_s_0002", 5 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 5, }, { "rt_gntn_shlnArea0_s_0002", 7 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 6, }, { "rt_gntn_shlnArea0_s_0002", 6 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 7, }, { "rt_gntn_shlnArea0_s_0002", 9 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 8, }, { "rt_gntn_shlnArea0_s_0002", 10 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 9, }, { "rt_gntn_shlnArea0_s_0002", 11 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 11, }, { "rt_gntn_shlnArea0_s_0002", 10 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 12, }, { "rt_gntn_shlnArea0_s_0002", 13 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 13, }, { "rt_gntn_shlnArea0_s_0002", 15 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 14, }, { "rt_gntn_shlnArea0_s_0002", 19 }, },
+  { { "rt_gntn_shlnArea0_s_0003", 15, }, { "rt_gntn_shlnArea0_s_0002", 20 }, },
+  { { "rt_gntn_shlnArea0_s_0004", 0, }, { "rt_gntn_shlnArea0_b_0000", 22 }, },
+  { { "rt_gntn_shlnArea0_s_0004", 18, }, { "rt_gntn_shlnArea0_b_0000", 24 }, },
+  { { "rt_gntn_shlnArea0_s_0004", 19, }, { "rt_gntn_shlnArea0_b_0000", 18 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 0, }, { "rt_gntn_shlnArea0_s_0004", 17 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 22, }, { "rt_gntn_shlnArea0_s_0004", 20 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 21, }, { "rt_gntn_shlnArea0_s_0004", 21 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 19, }, { "rt_gntn_shlnArea0_s_0004", 2 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 18, }, { "rt_gntn_shlnArea0_s_0004", 3 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 15, }, { "rt_gntn_shlnArea0_s_0004", 10 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 13, }, { "rt_gntn_shlnArea0_s_0004", 11 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 11, }, { "rt_gntn_shlnArea0_s_0004", 14 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 0, }, { "rt_gntn_shlnArea0_s_0004", 0 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 0, }, { "rt_gntn_shlnArea0_s_0004", 0 }, },
+  { { "rt_gntn_shlnArea0_s_0005", 5, }, { "rt_gntn_shlnArea0_s_0006", 0 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 16, }, { "rt_gntn_shlnArea0_s_0004", 15 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 18, }, { "rt_gntn_shlnArea0_s_0005", 10 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 16, }, { "rt_gntn_shlnArea0_s_0005", 10 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 19, }, { "rt_gntn_shlnArea0_s_0005", 9 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 15, }, { "rt_gntn_shlnArea0_s_0005", 9 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 20, }, { "rt_gntn_shlnArea0_s_0005", 8 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 21, }, { "rt_gntn_shlnArea0_s_0005", 7 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 23, }, { "rt_gntn_shlnArea0_s_0005", 4 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 31, }, { "rt_gntn_shlnArea0_s_0005", 22 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 32, }, { "rt_gntn_shlnArea0_s_0005", 19 }, },
+  { { "rt_gntn_shlnArea0_s_0006", 32, }, { "rt_gntn_shlnArea0_s_0004", 2 }, },
+  { { "rt_gntn_shlnArea0_s_0007", 0, }, { "rt_gntn_shlnArea0_s_0004", 18 }, },
+  { { "rt_gntn_shlnArea0_s_0007", 2, }, { "rt_gntn_shlnArea0_s_0005", 2 }, },
+  { { "rt_gntn_shlnArea0_s_0007", 1, }, { "rt_gntn_shlnArea0_s_0005", 1 }, },
+  { { "rt_gntn_shlnArea0_s_0008", 23, }, { "rt_gntn_shlnArea0_s_0007", 6 }, },
+  { { "rt_gntn_shlnArea0_s_0008", 22, }, { "rt_gntn_shlnArea0_s_0007", 7 }, },
+  { { "rt_gntn_shlnArea0_s_0008", 21, }, { "rt_gntn_shlnArea0_s_0007", 8 }, },
+  { { "rt_gntn_shlnArea0_s_0008", 20, }, { "rt_gntn_shlnArea0_s_0007", 9 }, },
+  { { "rt_gntn_shlnArea0_s_0008", 19, }, { "rt_gntn_shlnArea0_s_0007", 10 }, },
+  { { "rt_gntn_shlnArea0_s_0008", 18, }, { "rt_gntn_shlnArea0_s_0007", 11 }, },
+  { { "rt_gntn_shlnArea0_s_0008", 18, }, { "rt_gntn_shlnArea0_s_0007", 15 }, },
+}
+
+this.SetCautionRouteAlertGntn = {
+  [0]={
+    "rt_gntn_shlnArea0_n_0000",
+    "rt_gntn_shlnArea0_n_0001",
+    "rt_gntn_shlnArea0_n_0002",
+    "rt_gntn_shlnArea0_n_0003",
+    "rt_gntn_shlnArea0_n_0004",
+    "rt_gntn_shlnArea0_n_0005",
+    "rt_gntn_shlnArea0_n_0006",
+    "rt_gntn_shlnArea0_n_0007",
+    "rt_gntn_shlnArea0_n_0008",
+    "rt_gntn_shlnArea0_n_0009",
+    "rt_gntn_shlnArea0_n_0010",
+    "rt_gntn_shlnArea0_n_0011",
+    "rt_gntn_shlnArea0_n_0012",
+    "rt_gntn_shlnArea0_n_0013",
+    "rt_gntn_shlnArea0_n_0014",
+    "rt_gntn_shlnArea0_n_0015",
+    "rt_gntn_shlnArea0_n_0016",
+    "rt_gntn_shlnArea0_n_0017",
+    "rt_gntn_shlnArea0_n_0018",
+    "rt_gntn_shlnArea0_n_0019",
+    "rt_gntn_shlnArea0_n_0020",
+    "rt_gntn_shlnArea0_n_0021",
+    "rt_gntn_shlnArea0_n_0022",
+    "rt_gntn_shlnArea0_n_0023",
+    "rt_gntn_shlnArea0_n_0024",
+    "rt_gntn_shlnArea0_n_0025",
+    "rt_gntn_shlnArea0_n_0026",
+    "rt_gntn_shlnArea0_n_0027",
+    "rt_gntn_shlnArea0_n_0028",
+    "rt_gntn_shlnArea0_n_0029",
+    "rt_gntn_shlnArea0_n_0030",
+    "rt_gntn_shlnArea0_n_0031",
+    "rt_gntn_shlnArea0_n_0032",
+    "rt_gntn_shlnArea0_n_0033",
+    "rt_gntn_shlnArea0_n_0034",
+    "rt_gntn_shlnArea0_n_0035",
+    "rt_gntn_shlnArea0_n_0036",
+    "rt_gntn_shlnArea0_n_0037",
+    "rt_gntn_shlnArea0_n_0038",
+    "rt_gntn_shlnArea0_n_0039",
+    "rt_gntn_shlnArea0_n_0040",
+    "rt_gntn_shlnArea0_n_0041",
+    "rt_gntn_shlnArea0_n_0042",
+    "rt_gntn_shlnArea0_n_0043",
+    "rt_gntn_shlnArea0_n_0044",
+    "rt_gntn_shlnArea0_n_0045",
+    "rt_gntn_shlnArea0_n_0046",
+    "rt_gntn_shlnArea0_n_0047",
+    "rt_gntn_shlnArea0_n_0048",
+    "rt_gntn_shlnArea0_n_0049",
+    "rt_gntn_shlnArea0_n_0050",
+    "rt_gntn_shlnArea0_n_0051",
+    "rt_gntn_shlnArea0_n_0052",
+    "rt_gntn_shlnArea0_n_0053",
+    "rt_gntn_shlnArea0_n_0054",
+    "rt_gntn_shlnArea0_n_0055",
+    "rt_gntn_shlnArea0_n_0056",
+    "rt_gntn_shlnArea0_n_0057",
+    "rt_gntn_shlnArea0_n_0058",
+    "rt_gntn_shlnArea0_n_0059",
+    "rt_gntn_shlnArea0_n_0060",
+    "rt_gntn_shlnArea0_n_0061",
+    "rt_gntn_shlnArea0_n_0062",
+    "rt_gntn_shlnArea0_n_0063",
+    "rt_gntn_shlnArea0_n_0064",
+    "rt_gntn_shlnArea0_n_0065",
+    "rt_gntn_shlnArea0_n_0066",
+    "rt_gntn_shlnArea0_n_0067",
   },
 }
 
@@ -635,7 +975,7 @@ this.SetSahelanMissileRouteList = function(CurrentSearchMissilerouteList)
   end
 end
 
-this.SetSahelanSearchRouteList = function()
+this.SetSahelanSearchRouteListForAfgh = function()
 
   local sahelanRouteTableAlert = this.SetCautionRouteAlertAfgh[Ivars.IsSahelanActiveArea:Get()]
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
@@ -649,9 +989,23 @@ this.SetSahelanSearchRouteList = function()
   end
 end
 
+this.SetSahelanSearchRouteListForGntn = function()
+
+  local sahelanRouteTableAlert = this.SetCautionRouteAlertGntn[0]
+  local gameObjectId = {type="TppSahelan2", group=0, index=0}
+  local indexNum = 0
+
+  
+  for k, routeName in pairs(sahelanRouteTableAlert) do
+    local command = {id="SetCautionRouteAll", route= routeName, index=indexNum }
+    GameObject.SendCommand(gameObjectId, command)
+    indexNum = indexNum + 1
+  end
+end
+
 this.SetSahelanRouteLink = function()
 
-  local routeLinkTable = this.sahelanLinkRouteTable
+  local routeLinkTable = this.sahelanLinkRouteTableGntn
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
 
   for setNum, linkSet in pairs(routeLinkTable) do
@@ -667,8 +1021,8 @@ this.SetSahelanRouteLink = function()
 end
 
 this.UpdateSahelanRoute = function( trapName )
-  local sahelanRouteTable = this.SahelanRouteListForAfgh[Ivars.IsSahelanActiveArea:Get()]
-  local ignoreTrapList = this.ignoreTrapList
+  local sahelanRouteTable = this.SahelanRouteListForGntn[0]
+  local ignoreTrapList = this.ignoreTrapListAfgh
 
   for k, ignoreTrap in pairs(ignoreTrapList) do
     if trapName == ignoreTrap and this.SahelanCounter > SAHELAN_WEAKENING_COUNT then
@@ -698,19 +1052,7 @@ this.UpdateSahelanRoute = function( trapName )
     elseif v[1] == "rt_shln_Null" and v[2] ~= "rt_shln_Null" then 
       if k == trapName then 
           this.SetSahelanCautionRoute(v[2])
-          InfCore.Log("UpdateSahelanRoute: "..trapName.." Only Caution route assigned. Caution route updated to: "..v[2])  
-          return  
-      end
-    elseif v[1] == "rt_shln_Null0001" and v[2] ~= "rt_shln_Null0001" then 
-      if k == trapName then 
-          this.UpdateSahelanBaseRoute(v[2])
-          InfCore.Log("UpdateSahelanRoute: "..trapName.." Base route assigned. base route updated to: "..v[2]) 
-          return  
-      end
-    elseif v[1] ~= "rt_shln_Null0001" and v[2] == "rt_shln_Null0001" then 
-      if k == trapName then 
-          this.UpdateSahelanBaseRoute(v[1])
-          InfCore.Log("UpdateSahelanRoute: "..trapName.." Base route assigned. base route updated to: "..v[1]) 
+          InfCore.DebugPrint("UpdateSahelanRoute: "..trapName.." Only Caution route assigned. Caution route updated to: "..v[2])  
           return  
       end
     else
@@ -739,7 +1081,7 @@ end
 
 this.StopRedStorm = function()
     --Enables the sahelan fog tag
-    WeatherManager.RequestTag("Sahelan_fog", 3 ) 
+    --WeatherManager.RequestTag("Sahelan_fog", 3 ) 
     -- ???
     TppSoundDaemon.PostEvent("env_para_storm_end")
   
@@ -765,7 +1107,7 @@ this.CallSupportAttack = function()
 end
 
 this.StartHeliAntiSahelan = function()
-  -- Calls in the support heli with a special command, sets a point to spawn and a point to despawn isntead of a route
+  -- Calls in the support heli with a special command, sets a point to spawn and a point to despawn instead of a route
   local SupportgameObjectId = GameObject.GetGameObjectId("SupportHeli")
   GameObject.SendCommand(SupportgameObjectId, { id="StartAntiSahelan", startPosition=Vector3(vars.playerPosX + 350, vars.playerPosY + 160, vars.playerPosZ + 350) , pullOutPosition=Vector3(vars.playerPosX + 350, vars.playerPosY + 160, vars.playerPosZ + 350)} )
   InfCore.Log("SahelanBossEvents: StartHeliAntiSahelan called")
@@ -951,7 +1293,7 @@ this.ResetDisableDDSupport = function()
 end
 
 
--- ### Setup func for both hellbound AI and hybrid AI
+-- ### Setup func for hellbound AI
 this.SetUpSahelanAfghHellboundAI = function()
 
   local gameObjectId = {type="TppSahelan2", group=0, index=0}
@@ -965,7 +1307,7 @@ this.SetUpSahelanAfghHellboundAI = function()
   GameObject.SendCommand(gameObjectId, CombatGradecommand)
   this.UpdateSahelanBaseRoute( CurrentBaseRoute )
   -- Sally wont move on alert without routes here
-  --this.SetSahelanSearchRouteList()
+  --this.SetSahelanSearchRouteListForAfgh()
   --this.SetSahelanRouteLink()
   this.SetSahelanMissileRouteList(this.MissileRouteListForAfgh[Ivars.IsSahelanActiveArea:Get()])
   this.SetSahelanLife(this.SahelanMainLifeTable[4])
@@ -973,6 +1315,30 @@ this.SetUpSahelanAfghHellboundAI = function()
 
 end
 
+
+this.SetUpSahelanHellboundAIForGntn = function()
+
+  local gameObjectId = {type="TppSahelan2", group=0, index=0}
+  local CombatGradecommand = { id = "SetCombatGrade", defenseValue=60000, defenseValueForWeakPoint=20000, offenseGrade=15, defenseGrade=15 }
+
+  local CurrentBaseRoute = this.SahelanAreasGntnBaseRoutes[0]
+
+  this.SetSahelanSneakRoute(this.setOnBootSneakRoutesGntn[0])
+  this.SetSahelanCautionRoute(this.setOnBootCautionRoutesGntn[0])
+  
+  GameObject.SendCommand(gameObjectId, CombatGradecommand)
+  this.UpdateSahelanBaseRoute( CurrentBaseRoute )
+  this.SetSahelanSearchRouteListForGntn()
+  this.SetSahelanRouteLink()
+  this.SetSahelanMissileRouteList(this.MissileRouteListForGntn[0])
+  this.SetSahelanLife(this.SahelanMainLifeTable[4])
+  this.SetSahelanPartsLife(this.SahelanLifePartsTable[4])
+
+  --this.SetSahelanTypeHellboundAI()
+  --TppMission.StartBossBattle()
+  --PlayerIsDetected = true
+
+end
 
 this.SetUpSahelanAfghDominionAI = function()
 
@@ -997,68 +1363,75 @@ function this.AddMissionPacks(missionCode,packPaths)
   local SahelanAreasAfghPacks = {
   [0]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_0.fpk",
   },
   [1]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_1.fpk",
   },
   [2]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_2.fpk",
   },
   [3]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_3.fpk",
   },
   [4]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_4.fpk",
   },
   [5]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_5.fpk",
   },
   [6]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_6.fpk",
   },
   [7]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_7.fpk",
   },
   [8]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_8.fpk",
   },
   [9]={
     "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
-    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_dominion_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_afgh/afgh_area_9.fpk",
   },
 }
 
-  if Ivars.IsSahelanActiveIvar:Is(1) then
-    if vars.missionCode==30010 then
+local SahelanAreasGntnPacks = {
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_"..Ivars.IsSahelanAIModeGntn:Get().."_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_gntn/gntn_area_0.fpk",
+}
+
+  if vars.missionCode==30010 then
+    if Ivars.IsSahelanActiveIvar:Is(1) then
       if Ivars.IsSahelanPatrolRandomArea:Is(1) then
         ActiveAreaRandomID = math.random(0,9)
         for i,packagePath in ipairs(SahelanAreasAfghPacks[ActiveAreaRandomID])do
@@ -1069,11 +1442,12 @@ function this.AddMissionPacks(missionCode,packPaths)
           packPaths[#packPaths+1]=packagePath
         end
       end
-    elseif vars.missionCode==30020 then
-      --for i,packagePath in ipairs(this.packages.sally_stuffMafr)do
-      --  packPaths[#packPaths+1]=packagePath
-      --end
-      return
+    end
+  elseif vars.missionCode==30040 then
+    if Ivars.IsSahelanActiveInGntn:Get() == 1 then
+      for i,packagePath in ipairs(SahelanAreasGntnPacks)do
+        packPaths[#packPaths+1]=packagePath
+      end
     end
   end
 end
@@ -1087,194 +1461,42 @@ function this.MessagesForHellboundAI()
       StrCode32Table {
         Trap=this.sahelanTraps,
         GameObject={    
-                      { 
-                        msg = "ChangePhase",
-                        func = function( cpId, phase )
+                    { 
+                      msg = "ChangePhase",
+                      func = function( cpId, phase )
+                        if Ivars.IsSahelanTimer:Get() == 0 then
                           if phase == TppGameObject.PHASE_ALERT or phase == TppGameObject.PHASE_CAUTION then
                             if PlayerIsDetected == false then
                               this.SetSahelanTypeHellboundAI()
                               TppMission.StartBossBattle()
                               PlayerIsDetected = true
                             end 
-                          end         
+                          end 
                         end
-                      },    
-                    },  
-                  }
-end
-
--- ### Message table for Hybrid AI ###
-function this.MessagesForHybridAI()
-    return
-      StrCode32Table {
-        Trap=this.sahelanTraps,
-        GameObject={    
-                      { 
-                        msg = "ChangePhase",
-                        func = function( cpId, phase )
-                          if phase == TppGameObject.PHASE_ALERT or phase == TppGameObject.PHASE_CAUTION then
-                            CPPhaseSwitchCount = CPPhaseSwitchCount + 1
-                            if PlayerIsDetected == false then
-                              this.SetSahelanTypeHellboundAI()
-                              TppMission.StartBossBattle()
-                              PlayerIsDetected = true
-                            end
-                          elseif CPPhaseSwitchCount >= 5 and DidSahelanAISwitch == false then
-                            this.SetDominionModeStageTypes()
-                            DidSahelanAISwitch = true
-                          end         
-                        end
-                      },
-                      {
-                        -- ### Checks if sahelan is dead###
-                        msg = "Dead",
-                        func = function(id)
-                          if id == GameObject.GetGameObjectId("Sahelanthropus") then
-                            InfCore.Log("SahelanBossEvents: sahelan dead")
-                            this.StopRedStorm()
-                            -- debug
-                            InfCore.Log("SahelanBossEvents: Weak Hit Count totall: "..WeakpointHitCounts)
-                          end
-                        end,
-                      },
-                      -- ### Sent after mantis is hit by the player ###
-                      {
-                        msg = "Damage",
-                        func = function (id)
-                          if id == GameObject.GetGameObjectId("Mantis") then
-                            InfCore.Log("SahelanBossEvents: Mantis hit by player")
-                          end
-                        end,
-                      },
-                      -- ### Sahelan head was broken by the player ###
-                      {
-                        msg = "SahelanHeadBroken",
-                        func = function()
-                          InfCore.Log("SahelanBossEvents: sahelan head broken")
-                        end,
-                      },
-                      -- ### unknown when called exactly, calls a airtrike in sahelan
-                      { 
-                        msg = "SahelanEnableSuportAttack",
-                        func = function()
-                            this.CallSupportAttack()
-                        end,
-                      },
-                      -- ### Makes the support heli attack sahelen, its essencial for battle sequence, not optional
-                      { 
-                        msg = "SahelanEnableHeliAttack",
-                        func = function()
-                          this.StopRedStorm()         
-                          GameObject.SendCommand( { type="TppHeli2", index=0, }, { id="SetAntiSahelanEventEnabled", enabled=true } )   
-                        end,
-                      },
-                      -- ### Triggers after sahelan uses the red mist grenades ###
-                      { 
-                        msg = "SahelanGrenadeExplosion",
-                        func = function()
-                            -- number set here defines the duration in seconds, can be canceled by fight sequence changing
-                            this.StartRedStrom(100)
-                        end,
-                      },
-                      -- ### Triggers after sahelan starts using the railgun for the first time ###
-                      { 
-                        msg = "Sahelan1stRailGun",
-                        func = function()
-                          DidSahelanUseRailgun = true
-                          -- disables the heli attack against sahelan and requests a pull out
-                          GameObject.SendCommand( { type="TppHeli2", index=0, }, { id="SetAntiSahelanEventEnabled", enabled=false } )
-                          GameObject.SendCommand( { type="TppHeli2", index=0, }, { id="PullOut" } ) 
-                        end,
-                      },
-                      -- ### Triggers after sahelan leaves rex mode for the 1st time and starts the last phase of the batlle ###
-                      { 
-                        msg = "SahelanReturned1stRailGun",
-                        func = function()
-                          InfCore.Log("SahelanBossEvents: SahelanReturned1stRailGun")
-                        end,
-                      },
-                      -- ### Triggers at every fight phase change ###
-                      { 
-                        msg = "SahelanChangePhase",
-                        func = function(id,phaseName)
-                          if phaseName == TppSahelan2.SAHELAN2_PHASE_1ST  then 
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_1ST")
-                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_2ND then 
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_2ND")
-                            this.StartHeliAntiSahelan()
-                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_3RD then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_3RD")
-                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_4TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_4TH")
-                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_5TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_5TH")
-                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_6TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_6TH")
-                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_7TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_7TH")
-                          elseif phaseName == TppSahelan2.SAHELAN2_PHASE_8TH then
-                            InfCore.Log("SahelanBossEvents: SAHELAN2_PHASE_8TH") 
-                          end
-                        end,
-                      },
-                      -- ### Triggers every time a part is broken ? ###
-                      { 
-                        msg = "SahelanPartsBroken",
-                        func = function()
-                          InfCore.Log("SahelanBossEvents: SahelanPartsBroken")
-                        end,
-                      },
-                      -- ### Triggers when the player hits the weak point (glowing chest when it does sword attacks ?) ###
-                      { 
-                        msg = "SahelanBlastDamageToWeakPoint",
-                        func = function()
-                          WeakpointHitCounts = WeakpointHitCounts + 1
-                        end,
-                      },
-                      -- ### Triggers when sahelan attacks the heli before 1st rex mode ###
-                      { 
-                        msg = "SahelanSearchMissileToHeli",
-                        func = function()
-                        InfCore.Log("SahelanBossEvents: SahelanSearchMissileToHeli")         
-                          this.StopRedStorm()
-                        end,
-                      },
-        },
+                      end
+                    },    
+                  },   
         Timer = {
                   {
+                    -- Starts the fight when the timer's value is reached
                     msg = "Finish",
-                    sender = "RedStromTimer",
+                    sender = "SpawnTimer",
                     func = function()
-                      this.StopRedStorm()
+                      if Ivars.IsSahelanTimer:Get() == 1 then 
+                        InfCore.DebugPrint("SpawnTimer Finish")  
+                        -- No clue what this does
+                        TppMission.StartBossBattle()
+                        --Activates sahelan
+                        this.SetSahelanTypeHellboundAI()
+                        TppMission.StartBossBattle()
+                        -- debug log
+                        InfCore.Log("SahelanBossEvents: SpawnTimer = Finish, start fight")
+                      end
                     end
-                  },
-				  --{	
-					-- Starts the fight when the timer's value is reached
-                    --msg = "Finish",
-                    --sender = "SpawnTimer",
-                    --func = function()
-						--if Ivars.IsSahelanTimer:Get() == 1 then	
-							-- No clue what this does
-							--TppMission.StartBossBattle()
-							--Activates sahelan
-							--this.SetDominionModeStageTypes()
-							-- Sets all CPs on aler and keeps them that way
-							--if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
-								--this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
-								--this.KeepCommandPostAlert()
-							--end
-							-- sets the heli to Anti Sahelan mode, very important
-							--this.SetUpSupportHeli()
-							--TotalBrokenParts = 0
-							-- debug log
-							--InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
-						--end
-					--end
-                  --},					  
-        }, 
+                  },          
+        },
       }
 end
-
 
 -- ### Message table for Dominion AI ###
 function this.MessagesForDominionAI()
@@ -1284,28 +1506,28 @@ function this.MessagesForDominionAI()
                       { 
                         msg = "ChangePhase",
                         func = function( cpId, phase )
-							if Ivars.IsSahelanTimer:Get() == 0 then	
-								if phase == TppGameObject.PHASE_ALERT then								
-									if CPPhaseSwitchCount <= 0 then
-										CPPhaseSwitchCount = CPPhaseSwitchCount + 1
-										-- No clue what this does
-										TppMission.StartBossBattle()
-										--Activates sahelan
-										this.SetDominionModeStageTypes()
-										-- Sets all CPs on aler and keeps them that way
-										if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
-											this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
-											this.KeepCommandPostAlert()
-										end
-										-- sets the heli to Anti Sahelan mode, very important
-										this.SetUpSupportHeli()
-										TotalBrokenParts = 0
-										-- debug log
-										InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
-									end
-								end
-							end         
-						end
+                          if Ivars.IsSahelanTimer:Get() == 0 then
+                            if phase == TppGameObject.PHASE_ALERT then								
+                              if CPPhaseSwitchCount <= 0 then
+                                CPPhaseSwitchCount = CPPhaseSwitchCount + 1
+                                -- No clue what this does
+                                TppMission.StartBossBattle()
+                                --Activates sahelan
+                                this.SetDominionModeStageTypes()
+                                -- Sets all CPs on aler and keeps them that way
+                                if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+                                	this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
+                                	this.KeepCommandPostAlert()
+                                end
+                                -- sets the heli to Anti Sahelan mode, very important
+                                this.SetUpSupportHeli()
+                                TotalBrokenParts = 0
+                                -- debug log
+                                InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
+                              end
+                            end
+                          end
+                        end
                       },
                       {
                         -- ### Checks if sahelan is dead###
@@ -1460,27 +1682,27 @@ function this.MessagesForDominionAI()
                     end
                   },
                   {
-					-- Starts the fight when the timer's value is reached
+                    -- Starts the fight when the timer's value is reached
                     msg = "Finish",
                     sender = "SpawnTimer",
                     func = function()
-						if Ivars.IsSahelanTimer:Get() == 1 then	
-							-- No clue what this does
-							TppMission.StartBossBattle()
-							--Activates sahelan
-							this.SetDominionModeStageTypes()
-							-- Sets all CPs on aler and keeps them that way
-							if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
-								this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
-								this.KeepCommandPostAlert()
-							end
-							-- sets the heli to Anti Sahelan mode, very important
-							this.SetUpSupportHeli()
-							TotalBrokenParts = 0
-							-- debug log
-							InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
-						end
-					end
+                      if Ivars.IsSahelanTimer:Get() == 1 then	
+                        -- No clue what this does
+                        TppMission.StartBossBattle()
+                        --Activates sahelan
+                        this.SetDominionModeStageTypes()
+                        -- Sets all CPs on aler and keeps them that way
+                        if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+                          this.ChangeCommandPostPhase( TppGameObject.PHASE_ALERT )
+                          this.KeepCommandPostAlert()
+                        end
+                        -- sets the heli to Anti Sahelan mode, very important
+                        this.SetUpSupportHeli()
+                        TotalBrokenParts = 0
+                        -- debug log
+                        InfCore.Log("SahelanBossEvents: ChangePhase = start fight")
+                      end
+                    end
                   },				  
         }, 
       }
@@ -1492,38 +1714,83 @@ end
 
 --  ### IMPORTANT: The "sahelanTraps" needs to be set up here 1st, otherwise a empty table will be submited ### 
 --  ### Seems to work After Checkpoint and game reboot done this way                                        ###
-
+this.sahelanTraps = {} 
 
 function this.Init(missionTable)
-  if Ivars.IsSahelanActiveIvar:Is(1) then
-    if vars.missionCode==30010 then    
-      this.sahelanTraps = {} 
+  if vars.missionCode==30010 then
+    if Ivars.IsSahelanActiveIvar:Is(1) then    
       for trapName,sahelanRoutes in pairs ( this.SahelanRouteListForAfgh[Ivars.IsSahelanActiveArea:Get()] ) do
         local trapTable = {
           msg = "Enter",  sender = trapName,
           func = function ()  this.UpdateSahelanRoute( trapName ) end
         }
         table.insert( this.sahelanTraps, trapTable )
-		-- Sets the random timer for starting fight
-		this.SetTimer("SpawnTimer", math.random(Ivars.IsSahelanTimerLow:Get()*60,Ivars.IsSahelanTimerHigh:Get()*60))
+      end
+      if Ivars.IsSahelanTimer:Get() == 1 then 
+        -- Sets the random timer for starting fight
+        this.SetTimer("SpawnTimer", math.random(Ivars.IsSahelanTimerLow:Get()*60,Ivars.IsSahelanTimerHigh:Get()*60))
       end
       this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
     end 
+  elseif vars.missionCode==30040 then
+    if Ivars.IsSahelanActiveInGntn:Get() == 1 then
+      if Ivars.IsSahelanAIModeGntn:Get() == 0 then 
+        for trapName,sahelanRoutes in pairs ( this.SahelanRouteListForGntn[0] ) do
+          local trapTable = {
+            msg = "Enter",  sender = trapName,
+            func = function ()  this.UpdateSahelanRoute( trapName ) end
+          }
+          table.insert( this.sahelanTraps, trapTable )
+        end
+        if Ivars.IsSahelanTimer:Get() == 1 then 
+          if Ivars.IsSahelanTimerLow:Get() > Ivars.IsSahelanTimerHigh:Get() then
+            InfCore.DebugPrint("Hey dummy! the TimerHigh is lower than the TimerLow! that aint how it works init :| ")  
+          else 
+             -- Sets the random timer for starting fight
+            this.SetTimer("SpawnTimer", math.random(Ivars.IsSahelanTimerLow:Get()*60,Ivars.IsSahelanTimerHigh:Get()*60))
+          end
+        end
+        this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForHellboundAI())
+      elseif Ivars.IsSahelanAIModeGntn:Get() == 1 then
+        if Ivars.IsSahelanTimer:Get() == 1 then 
+          if Ivars.IsSahelanTimerLow:Get() > Ivars.IsSahelanTimerHigh:Get() then
+            InfCore.DebugPrint("Hey dummy! the TimerHigh is lower than the TimerLow! that aint how it works init :| ")  
+          else 
+             -- Sets the random timer for starting fight
+            this.SetTimer("SpawnTimer", math.random(Ivars.IsSahelanTimerLow:Get()*60,Ivars.IsSahelanTimerHigh:Get()*60))
+          end
+        end
+        this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
+      end
+    end
   end
  end
 
 
 
 this.SetUpEnemy = function ()
-  if Ivars.IsSahelanActiveIvar:Is(1) then
-    if vars.missionCode==30010 then
+
+  if vars.missionCode==30010 then
+    if Ivars.IsSahelanActiveIvar:Is(1) then
       this.SetUpSahelanAfghDominionAI()
+      CPPhaseSwitchCount = 0
+      PlayerIsDetected = false
+      if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+        this.DisableDDSupport()
+      end
     end
-    CPPhaseSwitchCount = 0
-    PlayerIsDetected = false
-    DidSahelanAISwitch = false
-    if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
-      this.DisableDDSupport()
+  elseif vars.missionCode==30040 then
+    if Ivars.IsSahelanActiveInGntn:Get() == 1 then
+      if Ivars.IsSahelanAIModeGntn:Get() == 0 then 
+        this.SetUpSahelanHellboundAIForGntn()
+      elseif Ivars.IsSahelanAIModeGntn:Get() == 1 then
+        this.SetUpSahelanAfghDominionAI()
+      end
+      CPPhaseSwitchCount = 0
+      PlayerIsDetected = false
+      if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+        this.DisableDDSupport()
+      end
     end
   end
 end 
@@ -1531,13 +1798,49 @@ end
 
 
 function this.OnReload(missionTable)
-  if Ivars.IsSahelanActiveIvar:Is(1) then
-    if vars.missionCode==30010 then
+  if vars.missionCode==30010 then
+    if Ivars.IsSahelanActiveIvar:Is(1) then
+      if Ivars.IsSahelanTimer:Get() == 1 then 
+          if Ivars.IsSahelanTimerLow:Get() > Ivars.IsSahelanTimerHigh:Get() then
+            InfCore.DebugPrint("Hey dummy! the TimerHigh is lower than the TimerLow! that aint how it works init :| ")  
+          else 
+             -- Sets the random timer for starting fight
+            this.SetTimer("SpawnTimer", math.random(Ivars.IsSahelanTimerLow:Get()*60,Ivars.IsSahelanTimerHigh:Get()*60))
+          end
+        end
       this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
     end
     CPPhaseSwitchCount = 0
     PlayerIsDetected = false
-    DidSahelanAISwitch = false
+    if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
+      this.DisableDDSupport()
+    end
+  elseif vars.missionCode==30040 then
+    if Ivars.IsSahelanActiveInGntn:Get() == 1 then
+      if Ivars.IsSahelanAIModeGntn:Get() == 0 then 
+        if Ivars.IsSahelanTimer:Get() == 1 then 
+          if Ivars.IsSahelanTimerLow:Get() > Ivars.IsSahelanTimerHigh:Get() then
+            InfCore.DebugPrint("Hey dummy! the TimerHigh is lower than the TimerLow! that aint how it works init :| ")  
+          else 
+             -- Sets the random timer for starting fight
+            this.SetTimer("SpawnTimer", math.random(Ivars.IsSahelanTimerLow:Get()*60,Ivars.IsSahelanTimerHigh:Get()*60))
+          end
+        end
+        this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForHellboundAI())
+      elseif Ivars.IsSahelanAIModeGntn:Get() == 1 then
+        if Ivars.IsSahelanTimer:Get() == 1 then 
+          if Ivars.IsSahelanTimerLow:Get() > Ivars.IsSahelanTimerHigh:Get() then
+            InfCore.DebugPrint("Hey dummy! the TimerHigh is lower than the TimerLow! that aint how it works init :| ")  
+          else 
+             -- Sets the random timer for starting fight
+            this.SetTimer("SpawnTimer", math.random(Ivars.IsSahelanTimerLow:Get()*60,Ivars.IsSahelanTimerHigh:Get()*60))
+          end
+        end
+        this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
+      end
+    end
+    CPPhaseSwitchCount = 0
+    PlayerIsDetected = false
     if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
       this.DisableDDSupport()
     end
@@ -1546,8 +1849,12 @@ end
 
 
 function this.OnMessage(sender,messageId,arg0,arg1,arg2,arg3,strLogText)
-  if Ivars.IsSahelanActiveIvar:Is(1) then
-    if vars.missionCode==30010 then
+  if vars.missionCode==30010 then
+    if Ivars.IsSahelanActiveIvar:Get() == 1 then
+      Tpp.DoMessage(this.messageExecTable,TppMission.CheckMessageOption,sender,messageId,arg0,arg1,arg2,arg3,strLogText)
+    end
+  elseif vars.missionCode==30040 then
+    if Ivars.IsSahelanActiveInGntn:Get() == 1 then
       Tpp.DoMessage(this.messageExecTable,TppMission.CheckMessageOption,sender,messageId,arg0,arg1,arg2,arg3,strLogText)
     end
   end   

@@ -9,9 +9,10 @@ The main goal of this project is to provide MG Sahelanthopus with all informatio
 | Hellbound AI | Partially Supported  |
 | Dominion AI | Supported  |
 | Dominion AI (Extreme)  | Supported  |
-| Hybrid Mode  | Partially Supported (has issues regarding collision)  |
 
 You can read more about the stage types [Here](https://mgsvmoddingwiki.github.io/AI/mgs/#stage-types "Here")
+
+US naval Camp (Guantanamo) is fully supported!
 
 Afghanistan Map Regions
 
@@ -39,4 +40,4 @@ Snakebite / Makebite ([Nexus Mods link](https://www.nexusmods.com/metalgearsolid
 
 #### Special Thanks
 
-Big big thank you to ZIP, caplag and yazed for helping me with lua related things and other things outside lua, and also a big thanks to BobDoleOwndU for figuring out the issue regarding broken custom Sahelanthopus models and providing a .frdv that fixes the issues
+Big big thank you to ZIP, caplag and yazed for helping me with lua related things and other things outside lua, and also a big thanks to BobDoleOwndU for figuring out the issue regarding broken custom Sahelanthopus models and providing a .frdv that fixes the issues and ofcourse, big thanks to amars for the timer idea and its implementation!

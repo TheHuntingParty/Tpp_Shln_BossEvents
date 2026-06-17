@@ -1,5 +1,13 @@
 # Changelogs
 
+#### r10
+- Added full support of both AI modes to US Naval Prison Facility (gntn)
+- Removed message table for Hybrid AI
+- Removed Hybrid AI packages
+- Changed the name of the AI packages (`shln_hellbound_cmn` -> `shln_0_cmn`, `shln_dominion_cmn` -> `shln_1_cmn`)
+- Added a time based trigger, courtesy of amars464
+
+
 #### r9
 - Added 1 skin, inspired by Shagohod from MGS3
 - Added a difficulty system with 4 options
