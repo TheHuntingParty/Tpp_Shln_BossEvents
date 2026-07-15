@@ -12,3 +12,16 @@ mgs0_main0_body2_bre_Soviet
 mgs0_main0_body2_Soviet
 mgs0_SkullDecal
 mgs0_SovietDecal
+mgs0_main0_body0_bridges
+mgs0_main0_body1_bridges
+mgs0_main0_body2_bridges
+mgs0_briges_decal0
+mgs0_briges_decal1
+mgs0_briges_decal2
+mgs0_briges_decal3
+mgs0_briges_decal4
+mgs0_briges_decal5
+mgs0_briges_decal6
+mgs0_briges_blueglow
+mgs0_briges_decal7_Off
+mgs0_briges_decal7_On

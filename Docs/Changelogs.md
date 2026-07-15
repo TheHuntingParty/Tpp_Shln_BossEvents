@@ -1,5 +1,11 @@
 # Changelogs
 
+#### r10b
+- Added `CustomMeshIDs.txt`
+- Added Mission and location Paks for a dev area
+- Reworked what the Skins packs load, allows more customization
+- Added a new skin "Bridges", still work in progress
+
 #### r10a
 - Added the missing route `rt_shlnArea9_b_DominionOutOfBounds` to the Guantanamo Area0 pack, it was causing a game crash
 

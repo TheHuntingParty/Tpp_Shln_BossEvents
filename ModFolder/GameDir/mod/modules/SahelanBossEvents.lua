@@ -50,7 +50,8 @@ this.SahelanFreeRoamMenu={
     "Ivars.IsSahelanDominionDifficulty",
     "Ivars.IsSahelanTimer",	
     "Ivars.IsSahelanTimerLow", 
-    "Ivars.IsSahelanTimerHigh", 	
+    "Ivars.IsSahelanTimerHigh",
+    "SahelanBossEvents.GOTODevArea", 	
   }
 }
 
@@ -81,7 +82,7 @@ this.IsSahelanPatrolRandomArea={
 this.IsSahelanCurrentModel={
   save=IvarProc.CATEGORY_EXTERNAL,
   default=0,
-  settings={0,1,2,3,4,5},
+  settings={0,1,2,3,4,5,6},
   settingNames="SahelanSkinOptions",
 }
 
@@ -147,7 +148,7 @@ this.langStrings={
       IsSahelanActiveArea="Current Active Area:",
       IsSahelanPatrolRandomArea="Randomize Active Area:",
       SahelanActiveAreaOptions={"Northern Area","Outpost 04","Yakho Oboo","Lamar Khaate","Shago Kallai","Wakh Barracks","Da wiallo Kallai","Da Ghwandai Khar","Qaria Sakhra Ee","Mountain Relay Base"},
-      SahelanSkinOptions={"Default","Black","Red","GZ","Black Sky","Shagohod"},
+      SahelanSkinOptions={"Default","Black","Red","GZ","Black Sky","Shagohod","Briges"},
       IsSahelanCurrentModel="Sahelanthropus Model: ",
       isLoadSahelanHealthBar="Health bar:",
       SahelanHealthBarOptions = {"Hide health bar","Show health bar"},
@@ -183,77 +184,7 @@ this.langStrings={
 
 this.SahelanRouteListForAfgh = {
   [0]={
-    trap_shln_area0020 = { "rts_shln_s_0020", "rts_shln_c_0020" },
-    trap_shln_area0030 = { "rts_shln_s_0030", "rts_shln_c_0030" },
-    trap_shln_area0040 = { "rts_shln_s_0040", "rts_shln_c_0040" },
-    trap_shln_area1010 = { "rts_shln_s_1010", "rts_shln_c_1010" },
-    trap_shln_area1020 = { "rts_shln_s_1020", "rts_shln_c_1020" },
-    trap_shln_area1030 = { "rts_shln_s_1030", "rts_shln_c_1030" },
-    trap_shln_area2010 = { "rts_shln_s_2010", "rts_shln_c_2010" },
-    trap_shln_area2020 = { "rts_shln_s_2020", "rts_shln_c_2020" },
-    trap_shln_area2030 = { "rts_shln_s_2030", "rts_shln_c_2030" },
-    trap_shln_area2040 = { "rts_shln_s_2040", "rts_shln_c_2040" },
-    trap_shln_area2050 = { "rts_shln_s_2050", "rts_shln_c_2050" },
-    trap_shln_area2060 = { "rts_shln_s_2060", "rts_shln_c_2060" },
-    trap_shln_area3010 = { "rts_shln_s_3010", "rts_shln_c_3010" },
-    trap_shln_area3020 = { "rts_shln_s_3020", "rts_shln_c_3020" },
-    trap_shln_area3030 = { "rts_shln_s_3030", "rts_shln_c_3030" },
-    trap_shln_area3040 = { "rts_shln_s_3040", "rts_shln_c_3040" },
-    trap_shln_area3050 = { "rts_shln_s_3050", "rts_shln_c_3050" },
-    trap_shln_area3060 = { "rts_shln_s_3060", "rts_shln_c_0033" },    
-    trap_shln_area3070 = { "rts_shln_s_3070", "rts_shln_c_3070" },
-    trap_shln_area4010 = { "rts_shln_s_4010", "rts_shln_c_0034" },    
-    trap_shln_area4020 = { "rts_shln_s_4020", "rts_shln_c_4020" },
-    trap_shln_area5010 = { "rts_shln_s_5010", "rts_shln_c_5010" },
-    trap_shln_area5020 = { "rts_shln_s_5020", "rts_shln_c_5020" },
-    trap_shln_area5030 = { "rts_shln_s_5030", "rts_shln_c_5030" },
-    trap_shln_area6010 = { "rts_shln_s_6010", "rts_shln_c_6010" },
-    trap_shln_area6020 = { "rts_shln_s_6020", "rts_shln_c_0032" },    
-    trap_shln_area6030 = { "rts_shln_s_6030", "rts_shln_c_6030" },
-    trap_shln_area7000 = { "rts_shln_s_7000", "rts_shln_c_7000" },
-    trap_shln_dummy02 = { "rts_shln_s_7000", "rts_shln_c_0023" },
-    trap_shln_dummy03 = { "rts_shln_s_7000", "rts_shln_c_0031" },
-    trap_shln_RoadToOKB0000 = { "rt_shln_SBtoOKB_s_0013", "rt_shln_Null", },
-    trap_shln_RoadToOKB0001 = { "rt_shln_SBtoOKB_s_0015", "rt_shln_Null", },
-    trap_shln_RoadToOKB0002 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0020", },
-    trap_shln_RoadToOKB0003 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0021", },
-    trap_shln_RoadToOKB0004 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0022", },
-    trap_shln_RoadToOKB0005 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0025", },
-    trap_shln_RoadToOKB0006 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0029", },
-    trap_shln_RoadToOKB0007 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0026", },
-    trap_shln_RoadToOKB0008 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0027", },
-    trap_shln_RoadToOKB0009 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0030", },
-    trap_shln_RoadToOKB0010 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0031", },
-    trap_shln_RoadToOKB0011 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0024", },
-    trap_shln_RoadToOKB0012 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0023", },
-    trap_shln_RoadToOKB0013 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0033", },
-    trap_shln_RoadToOKB0014 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0032", },
-    trap_shln_RoadToOKB0015 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0034", },
-    trap_shln_RoadToOKB0016 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0036", },
-    trap_shln_RoadToOKB0017 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0035", },
-    trap_shln_RoadToOKB0018 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0037", },
-    trap_shln_RoadToOKB0019 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0038", },
-    trap_shln_RoadToOKB0020 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0015", },
-    trap_shln_RoadToOKB0021 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0017", },
-    trap_shln_RoadToOKB0022 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0041", },
-    trap_shln_RoadToOKB0023 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0039", },
-    trap_shln_RoadToOKB0024 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0040", },
-    trap_shln_RoadToOKB0025 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0039", },
-    trap_shln_RoadToOKB0026 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0042", },
-    trap_shln_RoadToOKB0027 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0044", },
-    trap_shln_RoadToOKB0028 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0045", },
-    trap_shln_RoadToOKB0029 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0047", },
-    trap_shln_RoadToOKB0030 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0048", },
-    trap_shln_RoadToOKB0031 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0049", },
-    trap_shln_RoadToOKB0032 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0050", },
-    trap_shln_RoadToOKB0033 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0051", },
-    trap_shln_RoadToOKB0034 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0052", },
-    trap_shln_RoadToOKB0035 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0056", },
-    trap_shln_RoadToOKB0036 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0002", },
-    trap_shln_RoadToOKB0037 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0046", },
-    trap_shln_RoadToOKB0038 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0053", },
-    trap_shln_RoadToOKB0039 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0054", },
-    trap_shln_RoadToOKB0040 = { "rt_shln_Null", "rt_shln_SBtoOKB_c_0055", },
+    trapexample = { "rt_shln_Null", "rt_shln_Null" },
   },
   [1]={
     trapexample = {"rt_shln_Null","rt_shln_Null"},
@@ -285,7 +216,7 @@ this.SahelanRouteListForAfgh = {
 }
 
 this.setOnBootSneakRoutesAfgh = {
-  [0]="rt_shln_SBtoOKB_s_0015",
+  [0]="rt_shln_Null",
   [1]="rt_shln_Null",
   [2]="rt_shln_Null",
   [3]="rt_shln_Null",
@@ -298,7 +229,7 @@ this.setOnBootSneakRoutesAfgh = {
 }
 
 this.setOnBootCautionRoutesAfgh = {
-  [0]="rt_shln_SBtoOKB_c_0055",
+  [0]="rt_shln_Null",
   [1]="rt_shln_Null",
   [2]="rt_shln_Null",
   [3]="rt_shln_Null",
@@ -311,7 +242,7 @@ this.setOnBootCautionRoutesAfgh = {
 }
 
 this.SahelanAreasAfghBaseRoutes = {
-  [0]= "rts_shln_b_0000",
+  [0]= "rt_shln_Null",
   [1]= "rt_shln_Null",
   [2]= "rt_shln_Null",
   [3]= "rt_shln_Null",
@@ -325,75 +256,7 @@ this.SahelanAreasAfghBaseRoutes = {
 
 this.SetCautionRouteAlertAfgh = {
   [0]={
-    "rts_shln_c_0020",
-    "rts_shln_c_0030",
-    "rts_shln_c_0040",
-    "rts_shln_c_1010",
-    "rts_shln_c_1020",
-    "rts_shln_c_1030",
-    "rts_shln_c_2010",
-    "rts_shln_c_2020",
-    "rts_shln_c_2030",
-    "rts_shln_c_2040",
-    "rts_shln_c_2050",
-    "rts_shln_c_2060",
-    "rts_shln_c_3010",
-    "rts_shln_c_3020",
-    "rts_shln_c_3030",
-    "rts_shln_c_3040",
-    "rts_shln_c_3050",
-    "rts_shln_c_0033",
-    "rts_shln_c_3070",
-    "rts_shln_c_0034",
-    "rts_shln_c_4020",
-    "rts_shln_c_5010",
-    "rts_shln_c_5020",
-    "rts_shln_c_5030",
-    "rts_shln_c_6010",
-    "rts_shln_c_0032",
-    "rts_shln_c_6030",
-    "rts_shln_c_7000",
-    "rts_shln_c_0023",
-    "rts_shln_c_0031",
-    "rt_shln_SBtoOKB_c_0020",
-    "rt_shln_SBtoOKB_c_0021",
-    "rt_shln_SBtoOKB_c_0022",
-    "rt_shln_SBtoOKB_c_0025",
-    "rt_shln_SBtoOKB_c_0029",
-    "rt_shln_SBtoOKB_c_0026",
-    "rt_shln_SBtoOKB_c_0027",
-    "rt_shln_SBtoOKB_c_0030",
-    "rt_shln_SBtoOKB_c_0031",
-    "rt_shln_SBtoOKB_c_0024",
-    "rt_shln_SBtoOKB_c_0023",
-    "rt_shln_SBtoOKB_c_0033",
-    "rt_shln_SBtoOKB_c_0032",
-    "rt_shln_SBtoOKB_c_0034",
-    "rt_shln_SBtoOKB_c_0036",
-    "rt_shln_SBtoOKB_c_0035",
-    "rt_shln_SBtoOKB_c_0037",
-    "rt_shln_SBtoOKB_c_0038",
-    "rt_shln_SBtoOKB_c_0015",
-    "rt_shln_SBtoOKB_c_0017",
-    "rt_shln_SBtoOKB_c_0041",
-    "rt_shln_SBtoOKB_c_0039",
-    "rt_shln_SBtoOKB_c_0040",
-    "rt_shln_SBtoOKB_c_0039",
-    "rt_shln_SBtoOKB_c_0042",
-    "rt_shln_SBtoOKB_c_0044",
-    "rt_shln_SBtoOKB_c_0045",
-    "rt_shln_SBtoOKB_c_0047",
-    "rt_shln_SBtoOKB_c_0048",
-    "rt_shln_SBtoOKB_c_0049",
-    "rt_shln_SBtoOKB_c_0050",
-    "rt_shln_SBtoOKB_c_0051",
-    "rt_shln_SBtoOKB_c_0052",
-    "rt_shln_SBtoOKB_c_0056",
-    "rt_shln_SBtoOKB_c_0002",
-    "rt_shln_SBtoOKB_c_0046",
-    "rt_shln_SBtoOKB_c_0053",
-    "rt_shln_SBtoOKB_c_0054",
-    "rt_shln_SBtoOKB_c_0055",
+    "rt_shln_Null",
   },
   [1]={
     "rt_shln_Null",
@@ -436,84 +299,43 @@ this.SetCautionRouteAlertAfgh = {
 
 
 this.sahelanLinkRouteTableAfgh = {
-  
-  { { "rts_shln_s_5020", 3, }, { "rts_shln_c_5010", 2 }, }, 
-
-  --new route links here
-
-  --{ { "", 0, }, { "", 0 }, }, 
-
-
+  [0]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [1]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [2]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [3]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [4]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [5]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [6]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [7]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [8]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
+  [9]={
+    { { "rt_shln_Null", 0, }, { "rt_shln_Null", 0 }, },
+  },
 }
 
 this.ignoreTrapListAfgh = {}
 
 this.MissileRouteListForAfgh = {
   [0]={
-    "rts_SearchMissile0000",
-    "rts_SearchMissile0001",
-    "rts_SearchMissile0002",
-    "rts_SearchMissile0003",
-    "rts_SearchMissile0004",
-    "rts_SearchMissile0005",
-    "rts_SearchMissile0006",
-    "rts_SearchMissile0007",
-    "rts_SearchMissile0008",
-    "rts_SearchMissile0009",
-    "rts_SearchMissile0010",
-    "rts_SearchMissile0011",
-    "rts_SearchMissile0012",
-    "rts_SearchMissile0013",
-    "rts_SearchMissile0014",
-    "rts_SearchMissile0015",
-    "rts_SearchMissile0016",
-    "rts_SearchMissile0017",
-    "rts_SearchMissile0018",
-    "rts_SearchMissile0019",
-    "rts_SearchMissile0020",
-    "rts_SearchMissile0021",
-    "rts_SearchMissile0022",
-    "rts_SearchMissile0023",
-    "rts_SearchMissile0024",
-    "rts_SearchMissile0025",
-    "rts_SearchMissile0026",
-    "rts_SearchMissile0027",
-    "rts_SearchMissile0028",
-    "rts_SearchMissile0029",
-    "rts_SearchMissile0030",
-    "rts_SearchMissile0031",
-    "rts_SearchMissile0032",
-    "rts_SearchMissile0033",
-    "rts_SearchMissile0034",
-    "rts_SearchMissile0035",
-    "rts_SearchMissile0036",
-    "rts_SearchMissile0037",
-    "rts_SearchMissile0038",
-    "rts_SearchMissile0039",
-    "rts_SearchMissile0040",
-    "rts_SearchMissile0041",
-    "rt_SearchMissile_SVtoOKB_0000",
-    "rt_SearchMissile_SVtoOKB_0001",
-    "rt_SearchMissile_SVtoOKB_0002",
-    "rt_SearchMissile_SVtoOKB_0003",
-    "rt_SearchMissile_SVtoOKB_0004",
-    "rt_SearchMissile_SVtoOKB_0005",
-    "rt_SearchMissile_SVtoOKB_0006",
-    "rt_SearchMissile_SVtoOKB_0007",
-    "rt_SearchMissile_SVtoOKB_0008",
-    "rt_SearchMissile_SVtoOKB_0009",
-    "rt_SearchMissile_SVtoOKB_0010",
-    "rt_SearchMissile_SVtoOKB_0011",
-    "rt_SearchMissile_SVtoOKB_0012",
-    "rt_SearchMissile_SVtoOKB_0013",
-    "rt_SearchMissile_SVtoOKB_0014",
-    "rt_SearchMissile_SVtoOKB_0015",
-    "rt_SearchMissile_SVtoOKB_0016",
-    "rt_SearchMissile_SVtoOKB_0017",
-    "rt_SearchMissile_SVtoOKB_0018",
-    "rt_SearchMissile_SVtoOKB_0019",
-    "rt_SearchMissile_SVtoOKB_0020",
-    "rt_SearchMissile_SVtoOKB_0021",
+    "rt_shln_Null",
   },
   [1]={
     "rt_shln_Null",
@@ -1035,18 +857,18 @@ this.UpdateSahelanRoute = function( trapName )
     if v[1] ~= "rt_shln_Null" and v[2] ~= "rt_shln_Null" and v[1] ~= "rt_shln_Null0001" and v[2] ~= "rt_shln_Null0001" then 
         if k == trapName then   
           this.SetSahelanRoute( v[1], v[2] )
-          InfCore.Log("UpdateSahelanRoute: "..trapName.." Activated Routes updated to: Sneak Route: "..v[1].." Caution Route: "..v[2]) 
+          InfCore.DebugPrint("UpdateSahelanRoute: "..trapName.." Activated Routes updated to: Sneak Route: "..v[1].." Caution Route: "..v[2]) 
           return  
         end
     elseif v[1] == "rt_shln_Null" and v[2] == "rt_shln_Null" then 
         if k == trapName then 
-          InfCore.Log("UpdateSahelanRoute: No Routes assigned to: "..trapName.." No updates done !")
+          InfCore.DebugPrint("UpdateSahelanRoute: No Routes assigned to: "..trapName.." No updates done !")
           return  
         end
     elseif v[1] ~= "rt_shln_Null" and v[2] == "rt_shln_Null" then 
       if k == trapName then 
           this.SetSahelanSneakRoute(v[1])
-          InfCore.Log("UpdateSahelanRoute: "..trapName.." Only Sneak route assigned. Sneak route updated to: "..v[1])  
+          InfCore.DebugPrint("UpdateSahelanRoute: "..trapName.." Only Sneak route assigned. Sneak route updated to: "..v[1])  
           return  
       end
     elseif v[1] == "rt_shln_Null" and v[2] ~= "rt_shln_Null" then 
@@ -1307,8 +1129,8 @@ this.SetUpSahelanAfghHellboundAI = function()
   GameObject.SendCommand(gameObjectId, CombatGradecommand)
   this.UpdateSahelanBaseRoute( CurrentBaseRoute )
   -- Sally wont move on alert without routes here
-  --this.SetSahelanSearchRouteListForAfgh()
-  --this.SetSahelanRouteLink()
+  this.SetSahelanSearchRouteListForAfgh()
+  this.SetSahelanRouteLink()
   this.SetSahelanMissileRouteList(this.MissileRouteListForAfgh[Ivars.IsSahelanActiveArea:Get()])
   this.SetSahelanLife(this.SahelanMainLifeTable[4])
   this.SetSahelanPartsLife(this.SahelanLifePartsTable[4])
@@ -1333,11 +1155,7 @@ this.SetUpSahelanHellboundAIForGntn = function()
   this.SetSahelanMissileRouteList(this.MissileRouteListForGntn[0])
   this.SetSahelanLife(this.SahelanMainLifeTable[4])
   this.SetSahelanPartsLife(this.SahelanLifePartsTable[4])
-
-  --this.SetSahelanTypeHellboundAI()
-  --TppMission.StartBossBattle()
-  --PlayerIsDetected = true
-
+  
 end
 
 this.SetUpSahelanAfghDominionAI = function()
@@ -1355,6 +1173,21 @@ this.ChangeCommandPostPhase = function (Phase)
   local gameObjectId = { type="TppCommandPost2" }
   local command = { id = "SetPhase", phase=Phase }
   GameObject.SendCommand( gameObjectId, command )
+end
+
+this.SetTimer = function( timeString, seconds )
+  if GkEventTimerManager.IsTimerActive( timeString ) then   
+    GkEventTimerManager.Stop( timeString )
+    GkEventTimerManager.Start( timeString, seconds )
+  else
+    
+    GkEventTimerManager.Start( timeString, seconds )
+  end
+
+end
+
+this.GOTODevArea = function ()
+  TppMission.ReserveMissionClear{ nextMissionId = 13050}
 end
 
 
@@ -1430,6 +1263,13 @@ local SahelanAreasGntnPacks = {
     "/Assets/tpp/pack/mission2/shln/freeroam/areas_gntn/gntn_area_0.fpk",
 }
 
+local SahelanAreasDEVPacks = {
+    "/Assets/tpp/pack/mission2/shln/freeroam/skins/shln_skin_"..Ivars.IsSahelanCurrentModel:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/modes/shln_1_cmn.fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/ui/shln_healthbar_"..Ivars.isLoadSahelanHealthBar:Get()..".fpk",
+    "/Assets/tpp/pack/mission2/shln/freeroam/areas_DEV/DEV_area_0.fpk",
+}
+
   if vars.missionCode==30010 then
     if Ivars.IsSahelanActiveIvar:Is(1) then
       if Ivars.IsSahelanPatrolRandomArea:Is(1) then
@@ -1446,6 +1286,12 @@ local SahelanAreasGntnPacks = {
   elseif vars.missionCode==30040 then
     if Ivars.IsSahelanActiveInGntn:Get() == 1 then
       for i,packagePath in ipairs(SahelanAreasGntnPacks)do
+        packPaths[#packPaths+1]=packagePath
+      end
+    end
+  elseif vars.missionCode==13050 then 
+    if Ivars.IsSahelanActiveIvar:Get() == 1 then
+      for i,packagePath in ipairs(SahelanAreasDEVPacks)do
         packPaths[#packPaths+1]=packagePath
       end
     end
@@ -1717,6 +1563,10 @@ end
 this.sahelanTraps = {} 
 
 function this.Init(missionTable)
+
+  TppStory.SetMissionOpenFlag(13050,false)
+  TppStory.DisableMissionNewOpenFlag(13050)
+
   if vars.missionCode==30010 then
     if Ivars.IsSahelanActiveIvar:Is(1) then    
       for trapName,sahelanRoutes in pairs ( this.SahelanRouteListForAfgh[Ivars.IsSahelanActiveArea:Get()] ) do
@@ -1763,6 +1613,11 @@ function this.Init(missionTable)
         this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
       end
     end
+    --DEV only, for now i will reuse afgh Stuff
+  elseif vars.missionCode==13050 then 
+    if Ivars.IsSahelanActiveIvar:Is(1) then    
+      this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
+    end
   end
  end
 
@@ -1791,6 +1646,10 @@ this.SetUpEnemy = function ()
       if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
         this.DisableDDSupport()
       end
+    end
+  elseif vars.missionCode==13050 then
+    if Ivars.IsSahelanActiveIvar:Is(1) then
+      this.SetUpSahelanAfghDominionAI()
     end
   end
 end 
@@ -1844,6 +1703,10 @@ function this.OnReload(missionTable)
     if Ivars.IsSahelanDominionDifficulty:Get() == 3 then
       this.DisableDDSupport()
     end
+  elseif vars.missionCode==13050 then
+    if Ivars.IsSahelanActiveIvar:Is(1) then
+      this.messageExecTable=Tpp.MakeMessageExecTable(this.MessagesForDominionAI())
+    end
   end   
 end
 
@@ -1857,18 +1720,11 @@ function this.OnMessage(sender,messageId,arg0,arg1,arg2,arg3,strLogText)
     if Ivars.IsSahelanActiveInGntn:Get() == 1 then
       Tpp.DoMessage(this.messageExecTable,TppMission.CheckMessageOption,sender,messageId,arg0,arg1,arg2,arg3,strLogText)
     end
+  elseif vars.missionCode==13050 then 
+    if Ivars.IsSahelanActiveIvar:Get() == 1 then
+      Tpp.DoMessage(this.messageExecTable,TppMission.CheckMessageOption,sender,messageId,arg0,arg1,arg2,arg3,strLogText)
+    end
   end   
-end
- 
-this.SetTimer = function( timeString, seconds )
-	if GkEventTimerManager.IsTimerActive( timeString ) then		
-		GkEventTimerManager.Stop( timeString )
-		GkEventTimerManager.Start( timeString, seconds )
-	else
-		
-		GkEventTimerManager.Start( timeString, seconds )
-	end
-
 end
  
 return this 
